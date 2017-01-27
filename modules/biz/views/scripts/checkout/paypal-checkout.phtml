@@ -1,0 +1,29 @@
+<h1>Checkout</h1>
+ 
+Here is your order. Please confirm your order by clicking the SUBMIT button.
+ 
+<h2>Cart Items</h2>
+<!-- This form will just submit to itself, and then our token request begins. -->
+<form>
+	<ul>
+ 
+	<?php foreach($this->items as $sku => $item): ?>
+		<?php 
+		// Get each item's properties, and list them one item per row.
+		$name = $item['name'];	
+		$cpu = $item['cost_per_unit'];
+		$quantity = $item['quantity'];
+ 
+		$total_cost = $cpu * $quantity;
+ 
+		?>
+		<li>
+			SKU <?php echo $sku; ?> - <?php echo $name; ?> (<?php echo $total_cost; ?>)<br />
+			<span style="font-size: xx-small"><?php echo $quantity; ?> @ <?php echo $cpu ?>each</span>
+		</li>
+	<?php endforeach; ?>
+ 
+	</ul>
+ 
+	<input type="submit" name="submit" value="SUBMIT" />
+</form>

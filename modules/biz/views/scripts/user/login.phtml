@@ -1,0 +1,26 @@
+<h2>Sign In</h2>
+
+<?
+if (!empty($this->flashMessage)) {
+    foreach ($this->flashMessage as $flash) {
+        echo $flash . '<br>';
+    }
+}
+?>
+<? if(isset($this->message)):?>
+    <div class="error"><e><?= $this->message?></e></div>    
+<?endif?>
+<?if (!Zend_Auth::getInstance()->hasIdentity()) {
+    echo $this->form;
+}
+
+?>    
+<br>
+ <a href="register"><strong>Register</strong></a>
+ <a href="forget-password" style="margin-left:2em;"><strong>Forget Password?</strong></a>
+ 
+<script>
+$(function(){
+    document.getElementById('email').focus();
+});
+</script>

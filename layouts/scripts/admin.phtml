@@ -1,0 +1,159 @@
+<head> 
+    <script type="text/javascript" src="/biz/public/js/jquery/superfish/js/superfish.js"></script> 
+    <!--link rel="stylesheet" type="text/css" href="/biz/public/css/biz.css"-->
+    <link rel="stylesheet" type="text/css" href="/biz/public/css/crm.css">
+    
+</head>
+<div id="menu">
+    <ul class="left" style="display: none;">
+      
+       <?
+        $auth = Zend_Auth::getInstance()->getIdentity();
+        if($auth->role == 'sales') {
+            $link = "?repid=$auth->id&pid=";
+        } else {
+            $link = '';
+        }
+        ?>
+      <li id="leads"><a href="/biz/crm/leads<?= $link?>" class="top">Leads</a></li>
+      <li id="prospects"><a href="/biz/crm/prospect<?= $link?>" class="top">Prospects</a></li>
+      <li id="accounts"><a href="/biz/crm/accounts<?= $link?>" class="top">Accounts</a></li>
+      <li id="activities"><a href="/biz/crm/activity" class="top">Activities</a></li>  
+     
+      <li id="orders"><a href="/biz/production/unshipped" class="top">Orders</a>        
+        <ul>
+           <li><a href="/biz/production/unshipped">Unshipped</a></li>   
+           <li><a href="/biz/production/onhold">On-Hold</a></li>          
+           <li><a href="/biz/production/process">Processing</a></li>    
+            <li><a href="/biz/production/shipping">Shipping</a></li>
+        </ul>
+      </li>
+      <!--li id="inventory"><a href="/biz/inventory/stock" class="top">Inventory</a>        
+        <ul>
+           <li><a href="/biz/inventory/view">Inventory Orders</a></li>   
+           <li><a href="/biz/inventory/stock">Inventory Item Stock</a></li>   
+           <li><a href="/biz/inventory/create-order">Create Order</a></li>                     
+        </ul>      
+      </li-->
+       <? if(Zend_Auth::getInstance()->getIdentity() && (Zend_Auth::getInstance()->getIdentity()->role =='admin' || Zend_Auth::getInstance()->getIdentity()->role =='marketing' )):?>
+       <li id="reports"><a href="" class="top">Reports</a>
+       <ul>
+           <li><a href="/biz/report/account-conversion">Account Conversion</a></li>
+           <li><a href="/biz/report/allaccounts">Contacts Statistics</a></li>
+           <li><a href="/biz/report/phone-conversion">Phone Call Conversion</a></li> 
+           <li><a href="/biz/report/response-time">Response Time</a></li> 
+           <li><a href="/biz/report/contact-source">Web Form Sources</a></li> 
+        </ul> 
+       </li>
+      <li id="admin"><a href="/biz/product/admin" class="top">Admin</a>
+        <ul>
+          <li><a href="/biz/product/category">Category</a></li>
+          <li><a href="/biz/product/admin">Product</a></li>
+          <li><a href="/biz/downloads/upload">Upload Customer Files</a></li>
+          <!--li><a class="parent">parent</a>
+            <ul>
+              <li><a href="">text_attribute</a></li>
+              <li><a href="">text_attribute_group</a></li>
+            </ul>
+          </li-->
+         
+          <!--li><a href="">manufacturer</a></li-->
+        
+        </ul>
+      </li>
+      <?endif;?>
+      <!--li id="extension"><a class="top">extension</a>
+        <ul>
+          <li><a href=>text_module</a></li>
+          <li><a href=>text_module2</a></li>
+        
+        </ul>
+      </li-->
+      
+    </ul>
+     <ul class="right">
+        <li id="search"><a href="/biz/crm/search" class="top">Search</a></li>
+    </ul>
+    <ul class="right">
+      <li id="create"><a href="/biz/order/create" class="top">Create</a>
+        <ul>
+           <li><a href="/biz/order/create">Order</a></li>
+           <li><a href="/biz/crm/create-user/type/lead">Lead</a></li>   
+           <li><a href="/biz/crm/create-user/type/prospect">Prospect</a></li>          
+           <li><a href="/biz/crm/create-user/type/account">Account</a></li>            
+        </ul>
+      </li>
+    </ul>
+   
+    <script type="text/javascript"><!--
+$(document).ready(function() {
+	$('#menu > ul').superfish({
+		hoverClass	 : 'sfHover',
+		pathClass	 : 'overideThisToUse',
+		delay		 : 0,
+		animation	 : {height: 'show'},
+		speed		 : 'normal',
+		autoArrows   : false,
+		dropShadows  : false, 
+		disableHI	 : false, /* set to true to disable hoverIntent detection */
+		onInit		 : function(){},
+		onBeforeShow : function(){},
+		onShow		 : function(){},
+		onHide		 : function(){}
+	});
+	
+	$('#menu > ul').css('display', 'block');
+});
+
+function getURLVar() {
+        
+	var urlHalves = String(document.location).toLowerCase().split('/');
+        //url = String(document.location).toLowerCase();
+        length = urlHalves.length;
+       
+        return urlHalves[length-1];
+        /*
+        alert (length);
+        alert (urlHalves[length-1]);
+	var urlVarValue = '';
+	
+	if (urlHalves[1]) {
+		var urlVars = urlHalves[1].split('&');
+
+		for (var i = 0; i <= (urlVars.length); i++) {
+			if (urlVars[i]) {
+				var urlVarPair = urlVars[i].split('=');
+				
+				if (urlVarPair[0] && urlVarPair[0] == urlVarName.toLowerCase()) {
+					urlVarValue = urlVarPair[1];
+				}
+			}
+		}
+	}
+	*/
+	
+} 
+
+function doSearch(value,name){		   
+                    var url = "/biz/crm/search-result?query="+encodeURIComponent(value)+"&category="+encodeURIComponent(name);
+                    window.location.href = url;
+		}    
+
+$(document).ready(function() {
+	route = getURLVar();
+	//alert(route);
+	if (!route) {
+		$('#leads').addClass('selected');
+	} else {
+		part = route.split('/');		
+		url = part[0];
+		
+		if (part[1]) {
+			url += '/' + part[1];
+		}
+                              		
+		$('a[href*=\'' + url + '\']').parents('li[id]').addClass('selected');
+	}
+});
+//--></script> 
+  </div>

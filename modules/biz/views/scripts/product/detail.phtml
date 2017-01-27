@@ -1,0 +1,101 @@
+
+<style>
+   .addedmsg {
+    color: #008000;
+    font: bold 14px sans-serif;   
+    margin: 0 auto 20px;
+    width: 450px;
+}
+</style>
+
+<div style="float:left; width:740px;margin-left: 20px;">
+<div id="pagecart">
+    <p class="addedmsg">
+        This item has been added to your cart <br>
+        <a href="/biz/cart/item-summary"> Go To Cart And Check Out </a> | <a href="/biz/product"> Continue Shopping </a>
+    </p>    
+</div>
+<h3><?= $this->product['name']?> </h3><br>
+<img src="<?=$this->product['image']?>" style="float:left; margin:-30px;0px;0px;0px;">
+
+<!--div style="float:right;">
+<?= $this->product['short_description']?><br>-->
+
+<div style="float:right;width:200px;margin-top:80px;;margin-right:40px;">
+            
+<?if (!empty($this->prices)):?>  
+    <h4>PRICING GUIDE </h4><br>
+    <table>
+    <?foreach ($this->prices as $price):?>
+        <tr> <td width="80%"><?= $price['min']?> - <?= $price['max']?></td><td style="text-align:right;">$<?= $price['price']?></td></tr>
+    <? endforeach; ?>
+    </table>
+    <br>
+     <?if (!empty($this->options)):?>
+     <h4>Please Choose Options</h4><br>
+    <form id="optionForm">
+    <?foreach ($this->options as $key => $values):?>
+        <?= $key?>:
+            <select name="<?= $key?>">
+                 
+                <?foreach ($values as $index => $value):?>                   
+                    <option value="<?= $index?>"> <?= $value?> </option>
+                <?endforeach?>
+            </select><br>
+    <?endforeach?>
+     </form>
+   <?endif;?>    
+            <a class="addToCart"><img src="/biz/public/image/utility/add-to-cart.png"></a>
+    <?else:?>
+         Please contact your sales representative if you are interested in this product.
+ <?endif;?>
+   
+ 
+</div>
+
+<div id="product_description" style="clear:both;padding-top:30px;background:transparent url('/biz/public/image/utility/product_divide.png') repeat-x;">
+    <?= $this->product['description']?>
+</div>
+</div>
+
+     
+ <?= $this->action('rightbar', 'product');?>
+
+<script src='/biz/public/js/jquery/jquery.zoom.js'></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+         $('#ex1').zoom();  
+          
+         $("#pagecart").hide();
+         $('.addToCart').click(function() {   
+              if ($('#optionForm').length > 0 ) {
+              var error = 0;
+              var options = {};
+               $.each($('#optionForm').serializeArray(), function(i, field) {                
+                    if (field.value == '') {
+                        alert("Please choose " + field.name);
+                        error = 1;
+                    }              
+                    options[field.name] = field.value;
+              });
+              if (error == 1) {
+                  return false;
+              }
+          }
+          
+            $.post(
+		'/biz/cart/add',
+		{options: options,
+                 product_id: <?= $this->product['product_id'] ?>,
+                 quantity: 1
+		},
+		function(response)
+		{                  
+                   $("#pagecart").show();
+                   $('#cart').html(response.itemCount);
+		},
+		'json'
+		)
+        });
+    });
+</script>

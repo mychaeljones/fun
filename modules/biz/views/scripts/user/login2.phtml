@@ -1,0 +1,146 @@
+
+<?= $this->headLink() ?>
+    <style>
+    .alert {
+        margin-left: 26%;
+        width:39%;
+    }
+    h2 {
+        color: #245496;
+        font: 23pt 'Lato',arial,sans-serif;
+    }
+    </style>
+
+  <div style="margin-left: 33%;">
+      <h2>Please Sign In</h2>
+  </div>
+    <?
+    if (!empty($this->flashMessage)):?>
+    <div class="alert alert-danger">            
+            <span>
+                <strong>
+                <? foreach ($this->flashMessage as $flash):?>
+                    <? echo $flash .'<br>';?>
+                <?endforeach;?>
+                </strong>
+            </span>
+    </div>
+    <?endif;?>
+    <?if(isset($this->message)):?>
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <span><strong><?= $this->message?></strong></span>
+        </div>
+    <?endif;?>
+      
+    <form id="loginForm" method="post" class="form-horizontal">
+              
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Email address</label>
+                    <div class="col-lg-5">
+                        <input type="text" class="form-control" name="email" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Password</label>
+                    <div class="col-lg-5">
+                        <input type="password" class="form-control" name="password" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-5 col-lg-offset-3">
+                        <button type="submit" class="btn btn-lg btn-primary btn-block">Sign In</button>
+                    </div>
+                </div>
+   </form><br>
+   
+      
+    <a href="register" style="margin-left:25%;">Register</a>
+    <a href="forget-password" style="margin-left:23%;">Forget Password?</a>
+  
+    <script src="/biz/public/bootstrap/js/bootstrap.min.js"></script>   
+    <script type="text/javascript" src="/biz/public/bootstrap/js/bootstrapValidator.min.js"></script>
+    <script type="text/javascript">
+$(document).ready(function() {
+    $('#loginForm')
+        .bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                'firstName': {
+                    validators: {
+                        notEmpty: {
+                            message: 'The first name is required and cannot be empty'
+                        }
+                    }
+                },
+                'lastName': {
+                    validators: {
+                        notEmpty: {
+                            message: 'The last name is required and cannot be empty'
+                        }
+                    }
+                },
+                'username': {
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: 'The username is required and cannot be empty'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: 'The username must be more than 6 and less than 30 characters long'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z0-9_\.]+$/,
+                            message: 'The username can only consist of alphabetical, number, dot and underscore'
+                        },
+                        different: {
+                            field: 'password',
+                            message: 'The username and password cannot be the same as each other'
+                        }
+                    }
+                },
+                'email': {
+                    validators: {
+                         notEmpty: {
+                            message: 'Email is required and cannot be empty'
+                        },
+                        emailAddress: {
+                            message: 'The input is not a valid email address'
+                        }
+                    }
+                },
+                'password': {
+                    feedbackIcons: 'false',
+                    validators: {
+                        notEmpty: {
+                            message: 'The password is required and cannot be empty'
+                        }, 
+                        stringLength: {
+                            min: 4,
+                            max: 20,
+                            message: ''
+                        }
+                    }
+                },
+                'gender': {
+                    feedbackIcons: false,
+                    validators: {
+                        notEmpty: {
+                            message: 'The gender is required'
+                        }
+                    }
+                }
+            }
+        });
+});
+</script>
+  

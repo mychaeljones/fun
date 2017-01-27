@@ -1,0 +1,420 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="/biz/public/css/crm.css">    
+</head>
+
+<body>
+
+    <h1>Internal Order Creation Form </h1>
+    
+    <span class="button" onClick="window.open('/biz/crm/customer/id/<?= $this->user['id'] ?>')" >View Custom Product</span><br>
+    <span class="button" onClick="history.go(-1);return true;" style="float:right;">Back</span><br>
+        
+<label for="email">Email</label><?= $this->user['email'] ?> <br>
+<label for="businessname">Business Name</label><?= $this->user['businessname'] ?> <br>
+
+
+<label for="contactname">Contact Name</label> <?= $this->user['firstname'] ?> <?= $this->user['lastname'] ?> <br>
+<label for="customertype">Customer Type</label> <?= $this->user['businesstype'] ?> <br>
+
+<form id="orderForm" method="POST" >
+
+<h2>Contact Info </h2>
+<label for="contact_email">Contact Email</label> <input type="text" size="30" name="contact_email" value = "<?= $this->user['email']?>" > <br> 
+<label for="contact_phone">Contact Phone</label> <input type="text" size="30" name="contact_phone" value = "<?= $this->user['contactphone']?>" >  <br>
+
+<h2>Items </h2>     
+<table cellpadding="0" cellspacing="0" border="0" width="80%" id="items" class="account">    
+    <tr>      
+        <th>Item</th>     
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Item Total</th>
+    </tr>
+                                                                                
+    <tr class="dataRow">   
+        <td><input type="text" size="50" name="item[]" class="field_input item" /></td>       
+        <td><input name="quantity[]" size="10" type="text"  class="field_input quantity" style="text-align:right;"/></td>
+        <td><input type="text" size="10" name="unitPrice[]" disabled class="unitPrice" style="text-align:right;"/></td>       
+        <td><input type="text" size="10" name="itemTotal[]" disabled class="field_input itemTotal" style="text-align:right;"/></td>
+    </tr>
+    <tr><td colspan="4">Options: Package - Generic Advanced Kit Box 16% HP<br>
+            Pen -  Generic 16% HP 2ml pen<br>
+        </td></tr>
+        
+</table>
+    
+<div id="add_row" class="button">+ Item</div>    
+    
+<div style="margin-top: 10px;"></div>
+<h2>Shipping Option</h2> 
+<div id ="userAddress">
+    <?= $this->partial('order/_shipping-address.phtml', array('addresses'=>$this->addresses));?>
+</div>
+<div style ="clear: both;"></div>
+  
+<div id="dialog_edit_address">
+	<div id="edit_address"></div>
+</div>
+
+<div id="dialog_add_address">
+    <div id="add_address"></div>
+</div>   
+
+<div id="dialog_get_option">
+    <div id="get_option"></div>
+</div> 
+
+<div id="dialog_add_card">
+    <div id="add_card"></div>
+</div>
+
+
+<div style ="clear: both;"></div>
+<div id="shippingOption"></div>
+
+<br><h2>Payment Option</h2>
+1.  Credit Card:   <a class="button add_card">Add a new card </a><br>
+<? if (!empty($this->profiles)):?>
+   <?  $request = new Application_Service_AuthorizeNetCIM;?>
+   <? $index = 0?>
+   <?  foreach ($this->profiles as $profile):?>
+   <?       $paymentProfile = $request->getCustomerPaymentProfile($profile['profile_id'], $profile['payment_profile_id']);             
+            $card = $paymentProfile->xml->paymentProfile->payment->creditCard;
+            //$billTo = $paymentProfile->xml->paymentProfile->billTo
+   ?>            
+      <input type="radio" name="payment" value="<?=  $profile['payment_profile_id'] ?>" <? if($this->user['payment_option'] == 'card' & $index == 0) echo 'checked'; ?>><?= $card->cardNumber ?>  | <?php echo $profile['month'].'/'.$profile['year']?><br>
+      <? ++$index;?>
+<?  endforeach;?>
+
+      
+ <? endif; ?>
+ <br>
+ <input type="radio" name="payment" value="wire" <? if($this->user['payment_option'] == 'wire') echo 'checked'; ?>>2. Wire <br>
+ <input type="radio" name="payment" value="wu" >3. Western Union<br> 
+ <input type="radio" name="payment" value="mg">4. Money Gram <br>
+ <input type="hidden" name="userId" value="<?= $this->user['id']?>">
+ 
+ <br>Comment: 
+        <textarea name="comment" style="height:100px; width: 400px;" ></textarea>
+ 
+        <div id ="error"></div>
+ <input type="submit" id="submit" value="Sumit"  class="button" style="display:none;">
+</form>            
+            
+            
+<script>
+function itemAutoComplete(){       
+      //  var text=$(this).val().toString();
+        //$(this).val(text + text + text);   
+         $(this).autocomplete({
+                source: function(request, response)
+		{
+			$.post(
+				'/biz/product/user-autosuggest',
+				{ queryString: request.term, 
+                                  field: this.element.context.id,
+                                  user_id: <?= $this->user['id']?>
+                                },
+				function(list) { response(list); },
+				'json'
+			);
+		},
+		minLength: 2
+            });
+}
+function getPrice() {
+
+        clearShippingOption();
+        var $row=$(this).closest('tr');// all based on parent row
+        var item= $row.find('.item').val();
+        var quantity= $row.find('.quantity').val();
+                     
+        if (item != '' && quantity > 0) {
+         $.post(
+		'/biz/order/get-price',
+		{item: item,
+                 userId: <?= $this->user['id']?> ,
+                 quantity: quantity,
+                
+		},
+		function(response)
+		{
+                    if (response.message == 'error') {
+                        alert('No such Product found for this account');
+                        $row.find('.item').val('');
+                        $row.find('.quantity').val('');
+                    } else {
+                        $row.find('.unitPrice').val(response.unitPrice);                                  
+                        $row.find('.itemTotal').val(response.itemTotal);
+                   }
+                },
+		    'json'
+                )  
+           
+               
+        }
+}
+
+function clearShippingOption() {
+     $(".select").show();                                 
+     $(".selected").hide();  
+     $("#shippingOption").empty();
+     $("#error").empty().removeClass("error");     
+     $("#submit").hide();
+}
+
+$(document).ready(function(){
+    // use new classes to setup calc function using live()
+    $('.item, .quantity').on('change', function(){
+        var $row=$(this).closest('tr');// all based on parent row       
+        var item = $row.find('.item').val();
+        var quantity= $row.find('.quantity').val();
+        clearShippingOption();
+        getPrice();
+        
+        if (item == 'Advanced Kit') {
+            alert ('Select Options');
+        }       
+        
+        if (item !='' && quantity > 0 ) {
+        $.post(
+				'/biz/order/get-price',
+				{item: $row.find('.item').val(),
+                                 userId: <?= $this->user['id']?> ,
+                                 quantity: quantity
+				},
+				function(response)
+				{                                    
+                                    if (response.message == 'error') {
+                                        alert('No such Product found for this account');
+                                        $row.find('.item').val('');
+                                        $row.find('.quantity').val('');
+                                    } else {
+                                        $row.find('.unitPrice').val(response.unitPrice);                                  
+                                        $row.find('.itemTotal').val(response.itemTotal);
+                                    }
+                                    
+        
+				},
+				'json'
+                )
+                
+        }
+        
+               
+    });
+    
+     // bind item autocomplete to first row
+     $('.item').bind("keyup", itemAutoComplete )    
+      var numberExistingRows=1;      
+     //  use "ADD" button to add new row
+      $('#add_row').click(function(){
+     
+          // keep track of number of rows for input names
+          numberExistingRows++;
+         // clone a row
+         var $row= $('.dataRow:last').clone();
+                   
+          // strip previous values and fix names of inputs
+          $row.find('input').each(function(){
+              var $input=$(this);// cache this input into jQuery object in lieu of using $(this) in below functions for clarity and performance
+              $input.val("");// reset value to none
+              
+              // fix names
+              var thisInputName=$input.attr('name').split('_')[0] +'_'+numberExistingRows;
+              $input.attr('name', thisInputName)
+               
+          });   
+         // bind item auto complete to new row. SInce using classes now makes it much easier to locate correct input
+         $row.find('.item').bind("keyup", itemAutoComplete) ;   
+         $row.find('.item').on("change", getPrice) ;
+         $row.find('.quantity').on("change", getPrice);
+                        
+            
+           // for real autocomplete 
+            // $row.find('.tbTitle').autocomplete(// options)
+            
+         // append to table id=tblInventoryItems
+         $('#items').append( $row);     
+          
+    });
+    
+     $('.edit_address').click(function() {       
+          which = ($(this).attr("id")).split("_");      
+            $('#edit_address').html('');            
+            $('#edit_address').load('/biz/order/editaddress/id/' + which[1]);
+	    $('#dialog_edit_address').dialog('open');
+	});
+        
+     $('.add_address').bind('click', function(){   
+     //$('.add_address').click(function() {               
+          //which = ($(this).attr("id")).split("_");             
+            $('#add_address').html('');            
+            $('#add_address').load('/biz/order/addaddress/id/' + <?= $this->user['id']?>);
+	    $('#dialog_add_address').dialog('open');
+     });
+     
+    $('.add_card').bind('click', function(){                       
+            $('#add_card').html('');            
+            $('#add_card').load('/biz/crm/add-card/id/' + <?=  $this->user['id'] ?> );
+	    $('#dialog_add_card').dialog('open');
+    });   
+        
+
+    $('#dialog_add_card').dialog({
+      		title: 'Add Payment Card',
+		autoOpen:false,
+		width: 550,
+		maxWidth:600, 
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    Add: function() {
+                      
+                       // e.preventDefault();
+			dataString = $("#card").serialize();  
+                  
+				$.ajax({                                    
+				type: "POST",
+				url: '/biz/crm/add-card/id/' +  <?= $this->user['id'] ?>,
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                           
+                                   if (data == 'success') {                                   
+                                         window.location.href = '/biz/order/customer-info/id/' + <?= $this->user['id']?>;                                 
+                                     } else { 
+                                         $("#message").html(data);                                         
+                                     }
+				}
+			});
+                    },
+		    Cancel: function(){
+			$('#add_card').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});    
+        
+        
+
+    $('#dialog_edit_address').dialog({
+		title: 'Edit Address',
+		autoOpen:false,
+		minWidth:600,
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    Edit: function() {                      
+                       // e.preventDefault();
+			dataString = $("#address").serialize();                    
+                        $.ajax({                                    
+				type: "POST",
+				url: "/biz/order/editaddress/id/"+which[1],
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                                    if (data == 'success') {                                                                          
+                                        /*$("#dialog_edit_address").dialog('close');
+                                        $("#block_" + which[1]).html(data);
+                                        $(".select").show();                                 
+                                        $(".selected").hide();  
+                                        $("#shippingOption").empty();*/ 
+                                        
+            
+                                         window.location.href = '/biz/order/customer-info/id/' + <?= $this->user['id']?>;
+                                     } else {
+                                         $("#message").html(data);                                                                       
+                                     }
+                                     
+				}
+			});
+                    },
+		    Cancel: function() {
+			$('#edit_address').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+    
+      $('#dialog_add_address').dialog({
+      		title: 'Add Address',
+		autoOpen:false,
+		minWidth:600,
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    Add: function() {
+                      
+                       // e.preventDefault();
+			dataString = $("#address").serialize();  
+                  
+				$.ajax({
+                                    
+				type: "POST",
+				url: "/biz/order/addaddress/id/"+ <?= $this->user['id']?>,
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                                   if (data == 'success') {                                                                                                                 
+                                         window.location.href = '/biz/order/customer-info/id/' + <?= $this->user['id']?>;
+                                     } else {
+                                         $("#message").html(data);                                                                       
+                                     }
+				}
+			});
+                    },
+		    Cancel: function(){
+			$('#add_address').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+       
+        $('.select').bind('click', function(){   
+            $("#shippingOption").html("<img src='/biz/public/image/utility/ajax-loader.gif'>");
+            $(".select").show();                                 
+            $(".selected").hide();  
+            $('#selected_'+this.id).show();
+            $('#'+this.id).hide();
+            $("#submit").show();   
+                            
+            dataString = $("#orderForm").serialize();                  
+		$.ajax({                                    
+			type: "POST",
+			url: "/biz/order/shipping-rate/id/" + this.id,
+			data: dataString,
+                        dataType: 'html',
+			success: function(data) {                                       
+                            $("#shippingOption").html(data);                            
+                        }
+                });
+        });
+        
+       $("#orderForm").submit(function(e){		
+	    e.preventDefault();
+            dataString = $("#orderForm").serialize();                  
+		$.ajax({                                    
+			type: "POST",
+			url: "/biz/order/submit",
+			data: dataString,
+                        dataType: 'json',
+			success: function(data) {                                       
+                            //$("#shippingOption").html(data); 
+                            if(data.status == 'success') {
+                               // $("#userName").html('');
+                               window.location.href = '/biz/order/thank-you/id/' + data.orderId;
+                            } else {
+                                $("#error").html(data.error).addClass("error");
+                            }
+                        }
+                });
+        });    
+       
+});
+  
+ </script>
+</body>

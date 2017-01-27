@@ -1,0 +1,28 @@
+<!--head>
+    <link rel="stylesheet" type="text/css" href="/biz/public/css/crm.css">    
+</head-->
+<?= $this->action('construction', 'production'); ?>
+<h1>Internal Order Creation Form</h1>
+    <form method='POST' action="order-info">
+        <label for="email">Email: </label> <input type="text" name="email" size="30" id="email" > 
+        <input type='submit' class="button" value="Go!">
+    </form>
+<br>
+<!--span id="customerInfo"></span>
+<script>
+$(document).ready(function(){
+ $('#email').change(function() {
+          $.post(
+                'customer-info',
+                {email: $("#email").val()},
+                function(response) {                            
+                    if (response != 'na') {
+                       $("#customerInfo").html(response);
+                    }
+                },
+                'html'
+          )           
+       });   
+});
+  
+ </script-->

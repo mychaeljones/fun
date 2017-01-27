@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href='/biz/public/js/jquery/fullcalendar/fullcalendar.css' rel='stylesheet' />
+<link href='/biz/public/js/jquery/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
+<link href='/biz/public/css/crm.css' rel='stylesheet' />
+<script type="text/javascript" src="/biz/public/js/jquery/fullcalendar/fullcalendar.js"></script> 
+<script>
+
+	$(document).ready(function() {	
+		var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+		
+                var formatDate = function(dateString) {
+                    var parsedDate = $.fullCalendar.parseDate(dateString);
+                    return $.fullCalendar.formatDate(parsedDate, 'yyyy-MM-dd HH:mm');
+                }
+
+		var calendar = $('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+                        firstHour: 08,
+                      //  defaultView: 'agendaWeek',
+                        aspectRatio: 1.5,
+			selectable: true,
+			selectHelper: true,
+                        editable: true,
+                        droppable: true,
+                        //defaultEventMinutes: 40,
+                       /* select: function(start, end, allDay) {
+				var title = prompt('Event Title:');
+				if (title) {
+					calendar.fullCalendar('renderEvent',
+						{
+							title: title,
+							start: start,
+							end: end,
+							allDay: allDay
+						},
+						true // make the event "stick"
+					);
+				}
+				calendar.fullCalendar('unselect');
+			},*/
+                      /*  defaultView: 'agendaWeek',*/                      
+                       //timeFormat: 'H(:mm)',
+                       //agenda: 'h:mm{ - h:mm}',
+                      /*  select: function(start, end, allDay) {                            
+				var title = prompt('Event Title:');
+				if (title) {
+                                 
+                                 $.post('update-event', 
+                                 {"title": title,
+                                    "start": formatDate(start),
+                                    "end": formatDate(end),
+                                    "allDay": allDay                                 
+                                 },
+                                    function(data){
+                                       calendar.fullCalendar('renderEvent',
+                                                   {
+                                                           title: title,
+                                                           start: start,
+                                                           end: end,
+                                                           allDay: allDay
+                                                   },
+                                                   true // make the event "stick"
+                                           );
+                                    }
+                                );                                 
+				
+				}
+				calendar.fullCalendar('unselect');
+                                                         
+		        },*/
+                       
+                        select: function(start, end, allDay) { 
+                                $("#message").html('');
+				$("#createEvent").dialog('open');     
+                                $("#title").val();
+                                $("#start").val(formatDate(start));
+                                $("#end").val(formatDate(end));                            
+                        },                                
+              
+                        eventClick: function(event){
+                            $('#edit_event').html('');
+                            //var event_id = event.id;  
+                            $('#edit_event').load('update-event/id/' + event.id);
+                            $('#dialog_edit_event').dialog('open');
+                           /* $.post('get-event', 
+                                {"event_id": event_id},
+                                function(data){
+                                    $("#updateEvent").dialog('open');
+                                    
+                                    $('#calendar').fullCalendar("removeEvents",  data);
+                                    $('#calendar').fullCalendar("rerenderEvents");                
+                                }
+                            );
+                            $("#updateEvent").dialog('open');
+                            
+                            $.post('remove-event', 
+                                {"event_id": event_id},
+                                function(data){
+                                    $('#calendar').fullCalendar("removeEvents",  data);
+                                    $('#calendar').fullCalendar("rerenderEvents");                
+                                }
+                            );*/
+                        },
+                        
+                                           
+			editable: true,
+                        events: "get-activity",
+                        /*eventMouseover: function(event, jsEvent, view) {
+                         
+                           $('#calendar').fullCalendar("rerenderEvents");  
+                        },*/
+                        eventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {				
+                               // alert(formatDate(event.start) + formatDate(event.end));  
+                            var now = new Date();                            
+                            if (event.start >= now ) {
+                                if (allDay == true) {
+                                    allDay = 1;
+                                } else {
+                                    allDay = 0;
+                                }
+				$.post('update-event', 
+                                { 
+                                    "event_id":event.id,                             
+                                    "start": formatDate(event.start),
+                                    "end": formatDate(event.end),                           
+                                    "all_day": allDay                             
+                                },
+                         function(data) {                           
+                             if (data == 'success') {   
+                                alert('time change successfully');
+                             } else {
+                                alert ('nothing changed');
+                             }
+                         }
+                     );
+                            } else {
+                                alert ("Can not move the event to past.");
+                                revertFunc();
+                            }                                
+			},
+                        eventStartEditable: true,
+                        eventResize: function(event,dayDelta,minuteDelta,revertFunc) {                            
+				$.post('update-event', 
+                                { 
+                                    "event_id":event.id,                             
+                                    "start": formatDate(event.start),
+                                    "end": formatDate(event.end)                                                              
+                                },
+                         function(data) {                           
+                             if (data == 'success') {   
+                                alert('time change successfully');
+                             } else {
+                                alert ('Nothing Changed');
+                             }
+                         }
+                     );
+                        
+                        },
+                       /* eventDragStart: function(event, delta) {				
+                                alert(event.start + event.end);
+			},*/
+                     
+                       
+			
+		});
+      $("#createEvent").dialog({
+            autoOpen: false,
+            height: 350,
+            width: 700,
+            modal: true,
+            buttons: {
+                'Create event': function () {                    
+                   // alert($('#all_day').is(':checked'));
+                   if ($("#title").val() == '') {
+                       alert ('Pleae enter a title');
+                       return;
+                   }
+                    if ($('#all_day').is(':checked') == true) {
+                        allDay = 1;
+                    } else {
+                        allDay = 0;
+                    }
+                    if ($('#public').is(':checked') == true) {
+                        public = 1;
+                    } else {
+                        public = 0;
+                    }
+               
+                     $.post('create-event', 
+                         { 
+                             "title":  $("#title").val(),
+                             "start": $("#start").val(),
+                             "end": $("#end").val(),
+                             "description":$("#description").val(),
+                             "all_day": allDay,
+                             "public":public
+                         },
+                         function(data) {
+                             if (data == 'success') {
+                             
+                                calendar.fullCalendar('renderEvent',
+                                   {
+                                     title: $("#title").val(),
+                                     start: $("#start").val(),
+                                     end: $("#end").val(),
+                                     allDay: $('#all_day').is(':checked') 
+                                   },
+                                   true
+                                 );
+                                   calendar.fullCalendar('unselect');
+                                   $("#createEvent").dialog('close');  
+                             } else {
+                                  $("#message").html(data);                                  
+                             }
+                         }
+                     );
+                    
+                 },
+                 Cancel: function() {
+                    $(this).dialog('close');
+                 }
+              },
+                  close: function() {
+                }
+
+           });
+           
+        $('#dialog_edit_event').dialog({
+		title: 'Edit Event',
+		autoOpen:false,
+		minWidth:600,
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    'Update event': function () {                   
+                   
+                    if ($('#update_allDay').is(':checked') == true) {
+                        allDay = 1;
+                    } else {
+                        allDay = 0;
+                    }
+                    if ($('#update_public').is(':checked') == true) {
+                        public = 1;
+                    } else {
+                        public = 0;
+                    }
+               
+                     $.post('update-event', 
+                         { 
+                             "event_id":$("#update_eventId").val(),
+                             "title":  $("#update_title").val(),
+                             "start": $("#update_start").val(),
+                             "end": $("#update_end").val(),
+                             "description":$("#update_description").val(),
+                             "all_day": allDay,
+                             "public":public
+                         },
+                         function(data) {
+                            // alert(data);
+                            $("#update_message").html('');
+                             if (data == 'success') {   
+                                    
+                                calendar.fullCalendar('removeEvents',$("#update_eventId").val());                               
+                                calendar.fullCalendar('renderEvent',
+                                    {
+                                     id: $("#update_eventId").val(),
+                                     title: $("#update_title").val(),
+                                     start: $("#update_start").val(),
+                                     end: $("#update_end").val(),
+                                     allDay: $('#update_allDay').is(':checked')                                      
+                                    },
+                                   true
+                                 );
+                                   calendar.fullCalendar('unselect');
+                                   $("#dialog_edit_event").dialog('close');  
+                             } else {
+                                  $("#update_message").html(data);                                  
+                             }
+                         }
+                     );                    
+                 },
+                  'Remove Event': function(){
+                       var r=confirm("Are you sure you want to remove this event?");
+                       if (r==true) {
+                               
+            $.post(
+                'remove-event',
+                {event_id: $("#update_eventId").val()},
+                function(data) {
+                            // alert(data);
+                            $("#update_message").html('');
+                             if (data == 'success') {                                    
+                                calendar.fullCalendar('removeEvents',$("#update_eventId").val());                             
+                                calendar.fullCalendar('unselect');
+                                $("#dialog_edit_event").dialog('close');  
+                             } else {
+                                  $("#update_message").html(data);                                  
+                             }
+                         },
+                'html'
+            ) 
+       
+                       
+                       }
+                  },
+                 
+		    Cancel: function(){
+			$('#edit_event').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+           
+        
+     });
+
+</script>
+<style>
+
+	body {
+		/*margin-top: 40px;*/
+		text-align: center;
+		font-size: 13px;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		}
+
+	#calendar {
+		width: 800px;
+		margin: 0 auto;
+        }
+        
+        #upcoming {
+		width: 800px;
+		margin: 0 auto;
+        }
+                
+
+</style>
+</head>
+<body>
+    <div id="upcoming">
+    <table class="account">
+        <tr><th>Title</th><th>Start</th><th>End</th></tr>
+<? foreach($this->events as $event):?>
+        <tr><td><?= $event['title']; ?></td><td><?= date('n/j/Y g:i a', strtotime($event['start'])); ?></td><td><?= date('n/j/Y g:i a', strtotime($event['end'])); ?></td></tr>
+<?php endforeach;?>        
+    </table>
+    </div>
+    
+<div id='calendar'></div>
+<div id="createEvent" class="event-dialog" title="Create Event">        
+    <div id="message"></div>    
+    <div id="dialog-inner">
+        Event Title: <input type="text" name="title" id="title" class="text ui-widget-content ui-corner-all title"><br>
+        From: <span class="inline"><input type="text" name="start" id="start" class="text ui-widget-content ui-corner-all"></span>
+        <br>
+        <span class="inline">
+       To:</span> <span class="inline"><input type="text" name="end" id="end" class="text ui-widget-content ui-corner-all"></span>
+       <br>   
+       
+        <span class="inline">
+            &nbsp;All day <input type="checkbox" id="all_day"></span> 
+            &nbsp;Public <input type="checkbox" id="public"></span> 
+            
+        <br><label for="description">Description:</label> 
+        <textarea name="description" id="description" class="text ui-widget-content ui-corner-all" rows="4" cols="10">       
+        </textarea>
+    </div>
+</div>
+
+<div id="dialog_edit_event">
+	<div id="edit_event"></div>
+</div>
+</body>
+</html>

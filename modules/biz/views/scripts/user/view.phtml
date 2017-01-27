@@ -1,0 +1,253 @@
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>    
+    <!-- x-editable (bootstrap version) -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+</head>
+
+  
+<table>
+    <tr><th colspan='2'>Account Info</th></tr>
+    <tr><th>Account Name</th> 
+        <td><a href="#" id="username" data-type="text" data-title="Enter username" ><?= $this->user['username']?></a></td>
+    </tr>
+    <tr><th>Account ID</th>
+        <td><a href="#" id="account_id" data-type="text" data-title="Enter Account ID" ><?= $this->user['account_id']?></a></td>
+    
+    <tr><th>How They Found Us</th>
+        <td><a href="#" id="source"></a></td>
+        <td><a href="#" id="source_text"><?php echo ($this->user['source'] == 'Referred' || $this->user['source'] == 'Tradeshow' || $this->user['source'] == 'Other' )?$this->user['source_text']: ' '  ?></a></td>
+    </tr>
+    <tr><th>Lead Source</th><td><a href="#" id="imported"></a></td>
+        <td><a href="#" id="imported_text"><?php echo ($this->user['imported'] == 'Other' )?$this->user['imported_text']: ''  ?></a></td></tr>
+    <tr><th>Sales Rep</th><td></td></tr>
+    <tr><th>Account Type</th><td><a href="#" id="type"></a></td></tr>
+    <tr><th>Payment Options</th><td><a href="#" id="type"></a></td></tr>
+    
+</table>
+
+Description:
+<a href="#" id="description" data-type="textarea"><?= $this->user['description'];?></a>
+
+<?= $this->action('notes', 'user'); ?>
+
+<table>
+    <tr><th colspan='2'>Contact Info</th></tr>
+    <tr><th>First Name</th><td><a href="#" id="firstname" data-type="text" data-title="Enter first name" ><?= $this->user['firstname']?></a></td></tr>
+    <tr><th>Last Name</th><td><a href="#" id="lastname" data-type="text" data-title="Enter last name" ><?= $this->user['lastname']?></a></td></tr>
+    <tr><th>Phone</th><td><a href="#" id="contactphone" data-type="text" data-title="Enter contact phone" ><?= $this->user['contactphone']?></a></td></tr>
+    <tr><th>Email</th><td><a href="#" id="email" data-type="text" data-title="Enter contact email" ><?= $this->user['email']?></a></td></tr>
+    <tr><th>Secondary Phone</th><td><a href="#" id="contactphone2" data-type="text" data-title="Enter contact phone #2" ><?= $this->user['contactphone2']?></a></td></tr>
+    <tr><th>Secondary Email</th><td><a href="#" id="email2" data-type="text" data-title="Enter contact email #2" ><?= $this->user['email2']?></a></td></tr>
+</table>
+
+<table>
+    <tr><th colspan='2'>Business/Account Info</th></tr>
+    <tr><th>Business Name</th><td><a href="#" id="businessname" data-type="text" data-title="Enter business name" ><?= $this->user['businessname']?></a></td></tr>
+    <tr><th>Business Type</th><td><a href="#" id="businesstype" data-type="select" data-title="Enter business type" ><?= $this->user['businesstype']?></a></td></tr>
+    <tr><th>Business Phone</th><td><a href="#" id="businessphone" data-type="text" data-title="Enter busiiness phone" ><?= $this->user['businessphone']?></a></td></tr>
+    <tr><th>Website</th><td><a href="#" id="website" data-type="text" data-title="Enter website" ><?= $this->user['website']?></a></td></tr>    
+</table>
+
+<table>
+    <tr><th colspan='2'>Business Address</th></tr>    
+    <tr><th>Address 1</th><td><a href="#" id="address1" data-type="text" data-title="Enter address 1" ><?= $this->user['address1']?></a></td></tr>
+    <tr><th>Address 2</th><td><a href="#" id="address2" data-type="text" data-title="Enter address 2" ><?= $this->user['address2']?></a></td></tr>
+    <tr><th>City</th><td><a href="#" id="city" data-type="text" data-title="Enter city" ><?= $this->user['city']?></a></td></tr>    
+    <tr><th>State</th><td><a href="#" id="state" data-type="text" data-title="Enter state" ><?= $this->user['state']?></a></td></tr>    
+    <tr><th>Zip</th><td><a href="#" id="zip" data-type="text" data-title="Enter zip" ><?= $this->user['zip']?></a></td></tr>
+    <tr><th>Country</th><td><a href="#" id="country" data-type="text" data-title="Enter country" ><?= $this->user['country']?></a></td></tr>    
+</table>
+
+
+<table>
+    <tr><th colspan='2'>Shipping Profile</th></tr>   
+</table>
+
+<table>
+    <tr><th colspan='2'>Billing Profile</th></tr>   
+</table>
+
+<script>    
+$(document).ready(function() {
+    //toggle `popup` / `inline` mode
+    $.fn.editable.defaults.mode = 'inline';     
+    $.fn.editable.defaults.url = '/biz/user/edituser'; 
+    $.fn.editable.defaults.pk = '<?php echo $this->user['id']?>';
+    $.fn.editable.defaults.ajaxOptions = {dataType: "json"};
+     
+    $('#username').editable ({        
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#account_id').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#source_text').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#imported_text').editable ({           
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#description').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#firstname').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#lastname').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#contactphone').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#email').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#contactphone2').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#email2').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#businessname').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#address1').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#address2').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#address1').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#businesstype').editable ({            
+        type: 'select',
+        title: 'Business Type',
+        value: "<?php echo $this->user['businesstype']?>",
+        source: [
+          <?php echo $this->businessType;?>
+        ],
+        
+        success: function(response, newValue) {                              
+           if(!response.success) return response.message;
+        }        
+    });
+    $('#city').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#state').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#zip').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#country').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#website').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    
+    $('#source').editable({
+        type: 'select',
+        title: 'Select how they found us',        
+        placement: 'right',
+        value: "<?php echo $this->user['source']?>",
+        source: [
+            {value: '', text: ''},
+            {value: 'Referred', text: 'Referral'},
+            {value: 'Internet', text: 'Internet Search'},
+            {value: 'Tradeshow', text: 'Trade Show'},
+            {value: 'Other', text: 'other' }
+        ],
+       
+        
+        success: function(response, newValue) {      
+            //alert(newValue);
+            if (newValue == 'Internet') {
+                $('#source_text').hide();
+            }
+          if(!response.success) return response.message;
+        }
+    
+    });
+     $('#imported').editable({
+        type: 'select',
+        title: 'Lead source',
+        pk: <?php echo $this->user['id']?>,
+        placement: 'right',
+        value: "<?php echo $this->user['imported']?>",
+        source: [
+          <?php echo $this->leadSource;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            if (newValue != 'Other') {
+                $('#imported_text').hide();
+            } else {
+                $('#imported_text').show();
+            }
+          if(!response.success) return response.message;
+        }
+      });
+      $('#type').editable({
+        type: 'select',
+        title: 'Account Type',
+        value: "<?php echo $this->user['type']?>",
+        source: [
+          <?php echo $this->accountType;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            
+          if(!response.success) return response.message;
+        }
+      });
+    
+       
+       
+});
+</script>

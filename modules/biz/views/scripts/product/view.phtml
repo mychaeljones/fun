@@ -1,0 +1,10 @@
+<table>
+    <thead><th>Product ID</th><th>Product Name</th><th>Category</th></thead>
+    <tbody>
+    <? foreach($this->products as $product):?>
+            <tr><td><a href="edit/id/<?= $product['product_id'] ?>"><?= $product['product_id']?></a></td>
+                <td><?= $product['name']?></td>
+            </tr>
+    <? endforeach; ?>
+    </tbody>
+</table>

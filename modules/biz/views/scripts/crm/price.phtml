@@ -1,0 +1,54 @@
+<?= $this->action('construction', 'production'); ?>
+<table class="account" width="80%">
+    <thead><tr><th width="30%">Product</th><th>Qty Range</th>
+            <th>Unit</th><th>Unit Description</th><th>Standard Price</th>
+            <th>Min. Price</th><th>Price</th><th>Action</th>
+           </tr>
+    </thead>
+     
+<tbody>  
+    <? foreach ($this->prices as $price):?>       
+    
+        <tr><td width="30%"><?= $price['name'] ?></td>
+            <td align="right"><?= $price['min']?> - <?= $price['max']?></td>            
+            <td align="center"><?= $price['unit']?></td>
+            <td align="center"><?= $price['unit_description']?></td>
+            <td align="center"><?= $price['standardPrice']?></td>
+            <td align="right"><?= $price['min_price']?></td>
+            
+            <td align="right"><input type=text name="price" style="text-align: right;" value="<?= $price['price']?>"></td>
+            <td align="right"><a id="<?= $price['product_price_id']?>" class="smallButton update">Update</a></td>
+            
+        </tr>
+    <? endforeach; ?>   
+</tbody>
+
+</table>
+   
+       
+<script>
+ $(function() { 
+ $(".update").click(function() {  
+      priceId = $(this).attr('id');
+      price = $(this).closest('tr').find("input").val(); 
+      
+      $.post('/biz/crm/update-price', 
+            {             
+               'price': $(this).closest('tr').find("input").val(),
+               'product_price_id':$(this).attr('id')
+            },
+            function(data) {    
+                if (data == 1) {                    
+                    alert ('Update Successfully');
+                } else if (data == 3) {
+                    alert ('Nothing to be udpated');
+                } else if (data == 2) {
+                    alert ('Can not below min. price');
+                }
+            });   
+      
+ }); 
+ });
+</script>
+            
+            

@@ -1,0 +1,24 @@
+<div style="margin-bottom: 5px;"><h2>Item Inventory</h2></div>
+    
+        <table class="account" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+               <tr>
+                <th style="width:25%;">Date Time</th> 
+                <th>Author</th>                
+                <th>Action</th>  
+                <th>New Value</th> 
+               </tr>
+           </thead>
+           <tbody>               
+                 <? foreach($this->logs as $log):?>    
+                       <tr>
+                       <td style="width:25%;"><?= $log['action_time']?></td>                         
+                       <td align="center"><?= $log['author']?></td> 
+                       <td align="center"><?= $log['action']?>
+                            <?= $log['type'] ?> <?= $log['item'] ?></td>
+                       <td align="right"><?= $log['value'] ?></td> 
+                                           
+                       </tr>
+                 <? endforeach; ?>
+           </tbody>
+        </table>

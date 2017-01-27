@@ -1,0 +1,14 @@
+<h2>Contact Us</h2> <br>
+<p>We're here for you.</p>
+<p>  
+Your questions and concerns are important to us.You can call during the business hours, or e-mail 24 hours a day, seven days a week - our representatives are ready to answer your questions, send you information or help you place an order.
+</p>
+
+<? if(isset($this->message)):?>
+    <div class="success"><success><?= $this->message?></success></div>    
+<?endif?>
+<? if(isset($this->error)):?>
+    <div class="error"><e><?= $this->error?></e></div>    
+<?endif?>
+    
+ <?echo $this->form;?>

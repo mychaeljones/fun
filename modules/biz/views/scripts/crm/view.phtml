@@ -1,0 +1,596 @@
+<head>    
+    <!--link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">    
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script--> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css" rel="stylesheet"/>    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js"></script> 
+    <script src="/biz/public/js/jquery/jquery-editable-poshytip.js"></script>
+    
+    <style>
+        .Hot {
+           background-color: darkred;           
+        }            
+        a.Hot  {
+            color: white;
+        }
+        .Warm {
+          background-color: darkorange;    
+        }            
+        a.Warm  {
+            color: blue;
+        }
+        .Cool {
+          background-color: yellow;    
+        }            
+        a.Cool  {
+            color: blue;
+        }
+         .Cold {
+          background-color: lightyellow;    
+        }            
+        a.Cold  {
+            color: blue;
+        }
+        .Big {
+          background-color: lawngreen;    
+        }            
+        a.Big  {
+            color:black;
+        }
+        .Huge {
+          background-color: darkgreen;    
+        }            
+        a.Huge  {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="left"> 
+<table class="account" width="380px;">
+    <tr><th colspan='3'>Account Info</th></tr>
+    <tr><th>Account Name</th> 
+        <td colspan='2'><a href="#" id="username" data-type="text" data-title="Enter username" ><?= $this->user['username']?></a></td>
+    </tr>
+    <tr><th>Account ID</th>
+        <td colspan='2'><a href="#" id="account_id" data-type="text" data-title="Enter Account ID" > <?= $this->user['account_id']?></a>
+        </td>
+    </tr>
+    <? if($this->user['type'] == 'Lead' || $this->user['type'] == 'Prospect'):?>
+    <tr><th>Potential</th>
+        <?php 
+           /* if ($this->user['potential'] == 'Hot') {
+                $color = 'background-color: darkred;color:white;';
+            }elseif ($this->user['potential'] == 'Warm'){
+                $color = 'background-color: darkorange;color:blue;';
+            }elseif ($this->user['potential'] == 'Cool'){
+                $color = 'background-color: yellow;color:blue;';
+            }elseif($this->user['potential'] == 'Cold'){
+                $color = 'background-color: lightyellow;color:blue;';
+            }elseif($this->user['potential'] == 'Big'){
+                $color = 'background-color: lawngreen;color:dark;';
+            }elseif($this->user['potential'] == 'Huge'){
+                $color = 'background-color: darkgreen;color:white;';
+            }*/
+        ?>
+        <td colspan='2'><a href="#" id="potential" class="<?= $this->user['potential']?>"></a></td>
+    </tr>
+    <?endif;?>
+    <tr><th>Lead Source</th>
+        <td><a href="#" id="source"></a></td>
+        <td>
+            <?php if($this->user['source'] == 'Internet' && strstr($this->user['source_text'], '/')):?>
+                <a target="_blank" href="http://www.beamingwhite.com/<?= $this->user['source_text']?>"><?= $this->user['source_text']?></a>
+            <?else:?>
+                <a href="#" id="source_text">
+            <?php echo ($this->user['source'] == 'Internet' || $this->user['source'] == 'Referred' || $this->user['source'] == 'Social Media' || $this->user['source'] == 'Tradeshow' || $this->user['source'] == 'Other' )?$this->user['source_text']: ' '  ?></a>
+            <?php endif;?>
+            
+        </td>
+    </tr>
+    <tr><th>Initial Contact Via</th><td><a href="#" id="imported"></a></td>
+        <td><a href="#" id="imported_text"><?php echo ($this->user['imported'] == 'Other' || $this->user['imported'] == 'Tradeshow' )?$this->user['imported_text']: ''  ?></a></td>
+    </tr>
+    <tr><th>Sales Rep</th><td colspan='2'>
+            <? if($this->auth ==1):?>
+                <a href="#" id="parentAccountID"></a>
+            <? else: ?>
+                <?= $this->userRep['name'];?>
+            <?endif;?>
+        </td></tr>
+    <tr><th>Account Type</th>
+        <td colspan='2'><a href="#" id="type"></a></td></tr>
+    <tr><th>Customer Type</th><td colspan='2'><a href="#" id="customertype"></a></td></tr>
+    <tr><th>Sold By</th><td colspan='2'><a href="#" id="soldby"></a></td></tr>    
+    <tr><th>Payment Options</th><td colspan='2'><a href="#" id="payment_option"></a></td></tr>
+    <tr><th>Created Time</th><td colspan='2'><?= date('m/d/y &\nb\sp;&\nb\sp; g:i A', strtotime($this->user['created_time']));  ?></td></tr>
+   
+    <tr><th>Account Status</th><td colspan='2'><a href="#" id="status"></a></td></tr>
+    
+    <tr><th>Reset Password</th><td colspan='2'><span id="pwsent"><a class="smallButton" id="reset">Send Temporary Password</a></span></td></tr>
+    
+    <tr><th>EU Training</th>
+        <td><a href="#" id="euTraining"></a></td>
+        <td><? if($this->euTraining && $this->euTraining['score'] !=''):?>
+            Score: <?= $this->euTraining['score']?> 
+            Exam Time:<br>  <?= date('m/d/y g:i A', strtotime($this->euTraining['exam_time']))?> PST
+            <?endif;?>
+        </td>            
+    </tr>
+    <tr><th>Customer Description</th> 
+        <td colspan='2'><a href="#" id="description" data-type="textarea"><?= $this->user['description'];?></a></td>
+    </tr>
+    <tr><th>Hot Button</th> 
+        <td colspan='2'><a href="#" id="interest" data-type="textarea"><?= $this->user['interest'];?></a></td>
+    </tr>
+    
+</table>
+
+<?= $this->action('notes', 'crm'); ?>
+</div>
+    
+<div>
+<table class="account" width="420px;">
+    <tr><th colspan='2'>Contact Info</th></tr>
+    <tr><th>First Name</th><td><a href="#" id="firstname" data-type="text" data-title="Enter first name" ><?= ucwords($this->user['firstname'])?></a></td></tr>
+    <tr><th>Last Name</th><td><a href="#" id="lastname" data-type="text" data-title="Enter last name" ><?= ucwords($this->user['lastname'])?></a></td></tr>
+    <tr><th>Phone</th><td><a href="#" id="contactphone" data-type="text" data-title="Enter contact phone" ><?= $this->user['contactphone']?></a></td></tr>
+    <tr><th><a href="mailto:<?= $this->user['email']?>">Email</a></th><td><a href="#" id="email" data-type="text" data-title="Enter contact email" ><?= $this->user['email']?></a></td></tr>
+    <tr><th>Secondary Phone</th><td><a href="#" id="contactphone2" data-type="text" data-title="Enter contact phone #2" ><?= $this->user['contactphone2']?></a></td></tr>
+    <tr><th><a href="mailto:<?= $this->user['email2']?>">Secondary Email</a></th></th><td><a href="#" id="email2" data-type="text" data-title="Enter contact email #2" ><?= $this->user['email2']?></a></td></tr>
+</table>
+
+<table class="account" width="420px;">
+    <tr><th colspan='2'>Business Info</th></tr>
+    <tr><th>Business Name</th><td><a href="#" id="businessname" data-type="text" data-title="Enter business name" ><?= $this->user['businessname']?></a></td></tr>
+    <tr><th>Resale Number</th><td><a href="#" id="resale_number" data-type="text" data-title="Enter resale permit" ><?= $this->user['resale_number']?></a></td></tr>
+    
+    <tr><th>Business Type</th><td><a href="#" id="businesstype" data-type="select" data-title="Enter business type" ><?= $this->user['businesstype']?></a></td></tr>
+    <tr><th>Business Phone</th><td><a href="#" id="businessphone" data-type="text" data-title="Enter busiiness phone" ><?= $this->user['businessphone']?></a></td></tr>
+    <?
+        
+        $http = preg_match('/http/i', $this->user['website']);
+        if ($http === 0) $url = 'http://'. $this->user['website'];
+            else $url = $this->user['website'];
+    ?>
+    <tr><th><a href="<?= $url?>" target="_new">Website</a></th><td><a href="#" id="website" data-type="text" data-title="Enter website" ><?= $this->user['website']?></a></td></tr>    
+
+    <tr><th colspan='2'>Business Address</th></tr>    
+    <tr><th>Address 1</th><td><a href="#" id="address1" data-type="text" data-title="Enter address 1" ><?= $this->user['address1']?></a></td></tr>
+    <tr><th>Address 2</th><td><a href="#" id="address2" data-type="text" data-title="Enter address 2" ><?= $this->user['address2']?></a></td></tr>
+    <tr><th>City</th><td><a href="#" id="city" data-type="text" data-title="Enter city" ><?= $this->user['city']?></a></td></tr>    
+    <tr><th>State</th><td><a href="#" id="state"><?= $this->user['state']?></a></td></tr>    
+    <tr><th>Zip</th><td><a href="#" id="zip" data-type="text" data-title="Enter zip" ><?= $this->user['zip']?></a></td></tr>
+    <tr><th>Country</th><td><a href="#" id="country"></a> <? echo isset($this->countryName)?' ('.$this->countryName.')':''; ?></td></tr>    
+</table>
+    <table class="account" width="420px;">
+    <tr><th colspan='2'>Billing Address</th></tr>   
+    <tr><th>First Name</th><td><a href="#" id="billingfirstname" data-type="text" data-title="Enter biling first name" ><?= $this->billingAddress['firstname']?></a></td></tr>
+    <tr><th>Last Name</th><td><a href="#" id="billinglastname" data-type="text" data-title="Enter biling last name" ><?= $this->billingAddress['lastname']?></a></td></tr>
+    <tr><th>Company</th><td><a href="#" id="billingcompany" data-type="text" data-title="Enter biling company" ><?= $this->billingAddress['company']?></a></td></tr>    
+    <tr><th>Address 1</th><td><a href="#" id="billingaddress1" data-type="text" data-title="Enter address 1" ><?= $this->billingAddress['address1']?></a></td></tr>
+    <tr><th>Address 2</th><td><a href="#" id="billingaddress2" data-type="text" data-title="Enter address 2" ><?= $this->billingAddress['address2']?></a></td></tr>
+    <tr><th>City</th><td><a href="#" id="billingcity" data-type="text" data-title="Enter city" ><?= $this->billingAddress['city']?></a></td></tr>    
+    <tr><th>State</th><td><a href="#" id="billingstate"><?= $this->billingAddress['state']?></a></td></tr>    
+    <tr><th>Zip</th><td><a href="#" id="billingzipcode" data-type="text" data-title="Enter zip" ><?= $this->billingAddress['zipcode']?></a></td></tr>
+    <tr><th>Country</th><td><a href="#" id="billingcountry"></a></td></tr>   
+    
+    
+</table>
+</div>
+
+    
+</body>    
+
+<script>    
+$(document).ready(function() {   
+    
+     $(function() {
+        $("#tabs").tabs({
+            beforeLoad: function(event, ui) {
+                ui.jqXHR.error(function() {
+                    ui.panel.html(
+                            "Please Wait...");
+                });
+            }
+        });
+        $("#tabs").tabs().css({
+            'min-height': '400px',
+            'overflow': 'auto'
+         });
+    });
+    
+    //toggle `popup` / `inline` mode
+    $.fn.editable.defaults.mode = 'inline';     
+    $.fn.editable.defaults.url = '/biz/crm/edituser'; 
+    $.fn.editable.defaults.pk = '<?php echo $this->user['id']?>';    
+    $.fn.editable.defaults.ajaxOptions = {dataType: "json"};
+    $.fn.editable.defaults.emptytext = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+         
+    $('#username').editable ({        
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    
+    $('#account_id').editable ({          
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }
+    });
+     $('#source_text').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#imported_text').editable ({           
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#description').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#interest').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#firstname').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#lastname').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#contactphone').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#email').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#contactphone2').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#email2').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#businessname').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+     $('#resale_number').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+   
+    $('#businessphone').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#businesstype').editable ({   
+        
+        showbuttons: false,      
+        type: 'select',
+        title: 'Business Type',
+        value: "<?php echo $this->user['businesstype']?>",
+        source: [
+          <?php echo $this->businessType;?>
+        ],
+        
+        success: function(response, newValue) {                              
+           if(!response.success) return response.message;
+        }        
+    });
+     $('#address1').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#address2').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#city').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    
+    $('#zip').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    }); 
+                  
+    $('#country').editable({   
+        showbuttons: false,
+        type: 'select',    
+        value: "<?php echo $this->user['country'] ?>",
+        source: [<?php echo $this->countries; ?>],
+        title: 'Country',
+        success: function(response, newValue) {          
+            $('#state').editable('option', 'source',   response['currentStates'] );     
+            $('#state').editable('setValue', null);
+        }
+    });
+    $('#state').editable({
+        showbuttons: false,
+        type: 'select',
+        value: "<?php echo $this->user['state']?>",     
+        source: [<?php echo $this->states;?>],
+        title: 'state',
+        sourceError: 'Please, select value in country list' 
+     });
+    
+    $('#website').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    
+    $('#source').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'Select how they found us',        
+        placement: 'right',
+        value: "<?php echo $this->user['source']?>",
+        source: [
+            {value: '', text: ''},
+            {value: 'Internet', text: 'Internet Search'},    
+            {value: 'Outside Sales', text: 'Outside Sales'},
+            {value: 'Referred', text: 'Referred'},                        
+            {value: 'Social Media', text: 'Social Media'},
+            {value: 'Tradeshow', text: 'Trade Show'},
+            {value: 'Other', text: 'other' }
+        ],
+       
+        
+        success: function(response, newValue) {      
+            //alert(newValue);
+            if (newValue == 'Internet') {
+                $('#source_text').hide();
+            }
+          if(!response.success) return response.message;
+        }
+    
+    });
+     $('#imported').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'Lead source',
+        pk: <?php echo $this->user['id']?>,
+        placement: 'right',
+        value: "<?php echo $this->user['imported']?>",
+        source: [
+          <?php echo $this->leadSource;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            if (newValue != 'Other') {
+                $('#imported_text').hide();
+            } else {
+                $('#imported_text').show();
+            }
+          if(!response.success) return response.message;
+        }
+      });
+            
+      $('#type').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'Account Type',
+        value: "<?php echo $this->user['type']?>",
+        source: [
+          <?php echo $this->accountType;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            
+          if(!response.success) return response.message;
+        }
+      });
+      
+      $('#euTraining').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'EU Training',
+        value: "<?php echo $this->user['euTraining']?>",
+        source: [
+          <?php echo $this->euTrainingOption;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            
+          if(!response.success) return response.message;
+        }
+      });
+      
+      
+      
+       $('#customertype').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'Account Type',
+        value: "<?php echo $this->user['customertype']?>",
+        source: [
+          <?php echo $this->customerType;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            
+          if(!response.success) return response.message;
+        }
+      });
+       $('#status').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'Account Status',
+        value: "<?php echo $this->user['status']?>",
+        source: [
+          <?php echo $this->accountStatus;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            
+          if(!response.success) return response.message;
+        }
+      });
+       $('#potential').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'Potential',
+        value: "<?php echo $this->user['potential']?>",        
+        source: [
+          <?php echo $this->accountPotential?>
+        ],
+              
+        success: function(response, newValue) {
+          if(!response.success) return response.message;                           
+          $('#potential').removeClass(response.prev).css('background-color','').addClass(response.potential);           
+        }
+      });
+      
+      
+       $('#parentAccountID').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'Sales Representative',
+        value: "<?php echo $this->userRep['parent_user']?>",
+       
+        source: [
+          <?php echo $this->salesReps;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            
+          if(!response.success) return response.message;
+        }
+      });
+       
+      $('#payment_option').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'Payment Option',
+        value: "<?php echo $this->user['payment_option']?>",
+        source: [
+          <?php echo $this->paymentOptions;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            
+          if(!response.success) return response.message;
+        }
+      });
+       $('#soldby').editable({
+        showbuttons: false,
+        type: 'select',
+        title: 'Sold By',
+        value: "<?php echo $this->user['soldby']?>",
+       
+        source: [
+          <?php echo $this->soldbyOptions;?>
+        ],
+        
+        success: function(response, newValue) {                  
+            
+          if(!response.success) return response.message;
+        }
+      });
+      
+    $('#billingfirstname').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#billinglastname').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#billingcompany').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#billingaddress1').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#billingaddress2').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    $('#billingcity').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    
+    $('#billingzipcode').editable ({            
+        success: function(response, newValue) {            
+          if(!response.success) return response.message;
+        }         
+    });
+    
+        
+    $('#billingcountry').editable({   
+        showbuttons: false,
+        type: 'select',    
+        value: "<?php echo $this->billingAddress['country']?>",
+        source: [<?php echo $this->countries; ?>],
+        title: 'Country',
+        success: function(response, newValue) {          
+            $('#billingstate').editable('option', 'source',   response['currentStates'] );     
+            $('#billingstate').editable('setValue', null);
+        }
+    });
+    
+    $('#billingstate').editable({
+        showbuttons: false,
+        type: 'select',
+        value: "<?php  $this->billingAddress['state'];?>",     
+        source: [<?php  echo $this->billingStates;?>],
+        title: 'state',
+        sourceError: 'Please, select value in billing country list' 
+     });
+      
+    $("#reset").click(function() {           
+        var r=confirm("Reset a temporary password?");
+        if (r==true) {
+        
+            $.post('/biz/crm/password', 
+            { 
+               'email': '<?= $this->user['email']?>'
+            },
+            function(data) {    
+                if (data != '') {                    
+                    $("#pwsent").html('Password ' + data + ' Sent to Email');               
+                }
+            });           
+        }        
+    });
+     
+       
+});
+</script>

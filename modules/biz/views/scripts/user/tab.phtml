@@ -1,0 +1,25 @@
+<script>
+    $(function() {
+        $("#tabs").tabs({
+            beforeLoad: function(event, ui) {
+                ui.jqXHR.error(function() {
+                    ui.panel.html(
+                            "Couldn't load this tab. We'll try to fix this as soon as possible. " +
+                            "If this wouldn't be a demo.");
+                });
+            }
+        });
+    });
+</script>
+</head>
+
+<div id="tabs" style="width: 1200px;margin: 0  auto;">
+   
+<ul>
+<li><a href="/biz/user/accounts">leads</a></li>
+<li><a href="">Prospects</a></li>
+<li><a href="ajax/content2.html">Accounts</a></li>
+<li><a href="ajax/content3-slow.php">Tab 3 (slow)</a></li>
+<li><a href="ajax/content4-broken.php">Tab 4 (broken)</a></li>
+</ul>
+</div>

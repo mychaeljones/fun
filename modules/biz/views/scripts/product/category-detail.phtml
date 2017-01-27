@@ -1,0 +1,29 @@
+<div style="float:left; width:700px;margin-left: 20px;" >
+<h3><?= ucwords($this->products[0]['categoryName']) ?></h3>
+<p><?= $this->products[0]['categoryDescription']?></p>
+
+<?$count = 1;?>
+<table style="width:80%;text-align:center;">
+<?foreach($this->products as $product): ?>
+            <?if ($count/3 == 0): ?>
+                <tr>
+            <?endif?>
+                <td>
+                    <a href="/biz/product/detail/id/<?= $product['product_id']?>">
+                        <div>
+                            <img src="/biz/public/image/product/<?= $product['product_id'];?>/small.png" />
+                        </div>
+                        <div style="margin-bottom: 20px;" class="product_title">
+                            <?=$product['name'];?>                           
+                        </div>
+                    </a>
+                    <!--a href='/cart/add/productId/<?=$product['id'];?>'><img src="/public/images/shopping/add-to-cart.gif" style="border:none;margin:0px;" width="104" height="24"></a-->
+                </td>
+           <?if ($count % 3 == 0): ?>
+               </tr>
+           <?endif?>
+        <?++$count?>     
+<?endforeach;?>
+ </table>
+</div>
+<?= $this->action('rightbar', 'product');?>

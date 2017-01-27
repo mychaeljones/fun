@@ -1,0 +1,52 @@
+<script>
+$(function() {
+    $( "#side_menu" ).menu();
+});
+</script>
+<style>
+   .ui-menu { width: 150px; }
+</style>
+</head>
+<body>
+<ul id="side_menu">
+<li class="ui-state-disabled"><a href="#">Category</a></li>
+<? $product = new Application_Model_Product;?>
+<? foreach ($product->getCategories() as $categories):?>
+<li><a href="/biz/product/index/id/<?php echo $categories['category_id']?>"><?= ucwords($categories['name'])?></a></li>
+<?endforeach;?>
+    
+<!--li><a href="#">Chairs</a></li>
+<li><a href="#">Lamp</a></li>
+<li><a href="/biz/product/index/id/1">Kits</a>
+    <ul>
+        <li><a href="#">Advanced, Traditional, & Prefilled Tray Kits</a></li>
+        <li><a href="#">Dentist Pro Kit</a></li>
+        <li><a href="#">Tan White Kit</a></li>
+        <li><a href="#">Tan White Case (12 count)</a></li>
+        <li><a href="#">Pre-Filled Tray (NO kit)</a></li>
+        <li><a href="#">Headset Kit</a></li>
+    </ul>
+</li>
+
+<li>    
+<a>Take Home</a>
+<ul>
+<li class="ui-state-disabled"><a href="#">Metallic Touch-Up Pen</a></li>
+<li><a href="#">Case of Touch Up Pens (36 count)</a></li>
+<li><a href="#">Touch Up Kit</a></li>
+<li><a href="#">Take Home Kit</a></li>
+</ul>
+</li>
+
+<li><a href="#">Syringes</a></li>
+<li>
+<a href="#">Pens</a>
+<ul>
+<li>
+<a href="#">Teeth Shade Guides</a>
+<ul>
+<li><a href="#">Spectrum Teeth Shade Guide</a></li>
+<li><a href="#">R-20 Shade Guide</a></li>
+</ul>
+</li-->
+

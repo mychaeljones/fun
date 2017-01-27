@@ -1,0 +1,57 @@
+<h3>Thank you for your order!</h3>
+
+<h4>Contact Information:</h4>
+Email: <?= $this->order['contact_email'] ?> <br>
+Contact Phone: <?= $this->order['contact_phone'] ?> <br>
+
+<div style="float:right; width:50%;">
+<h4>Shipping Information</h4>
+<?= $this->order['shipping_firstname'] ?> <?= $this->order['shipping_lastname'] ?> 
+<?= $this->order['shipping_address1'] ?> <br>
+<? echo $this->order['shipping_address2'] ? $this->order['shipping_address2'] . '<br>' : ''; ?> 
+<?= $this->order['shipping_city'] ?>, <?= $this->order['shipping_state'] ?>, <?= $this->order['shipping_zipcode'] ?> <br>
+<?= $this->order['shipping_country'] ?> <br>
+Shipping Method: <?= $this->order['shipping_service']?>
+</div>
+
+<div style="float:right; width:50%;">
+<h4>Billing Information</h4>
+<?= $this->order['payment_firstname'] ?> <?= $this->order['payment_lastname'] ?><br>
+<?= $this->order['payment_address1'] ?><br>
+<? echo!empty($this->order['payment_address2']) ? $this->order['payment_address2'] . '<br>' : '' ?>
+<?= $this->order['payment_city'] ?> <?= $this->order['payment_state'] ?> <?= $this->order['payment_zipcode'] ?><br>
+<?= $this->order['payment_country'] ?>  <br>    
+</div>
+
+<div style="clear: both;"></div>
+<h4>Order Summary</h4>
+<table>
+    <tr><th>Item</th><th>Unit Price</th><th>QTY</th><th>Total</th></tr>    
+    <?foreach ($this->items as $item):?>
+        <? if(is_object($item)):?>
+        <tr>        
+            <td><?= $item->name;?></td>
+            <td align="right">$<?= $item->price;?></td>
+            <td align="right"><?= $item->qty;?></td>
+            <td align="right">$<?= $item->lineCost;?></td>    
+        </tr>
+        <? endif;?>
+   
+   <?if(!empty($item->options)):?>
+            <?foreach ($item->options as $option):?>
+                <tr>        
+                <td colspan='2'><?= $option['option_description']?></td>                
+                <td align="right"><?= $option['quantity']?></td>
+                <td></td>
+                </tr>
+            <?endforeach;?>
+        <?endif?>      
+                    
+   <? endforeach; ?>
+           
+    <tr><td colspan='3'><b>Merchandise total:</b></td><td align="right"><b>$<?= $this->items['subTotal'] ?></b></td></tr>
+    <tr><td colspan='3'><b>Shipping:</b> <?= $this->order['shipping_service']?></td><td align="right"><b>$<?= $this->order['shipping_rate']?></b></td></tr>
+    <tr><td colspan='3'><b>Tax </b></td><td align="right"><b>$<?= $this->order['tax_amount']?></b></td></tr>
+    <tr><td colspan='3'><b>Total</b></td><td align="right"><b>$<?= $this->order['total']?></b></td></tr>
+</table>
+

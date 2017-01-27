@@ -1,0 +1,39 @@
+<!--<?if ($this->order['shipping_address1'] != ''):?>
+Shipping To <br>
+<?= $this->order['shipping_firstname']?> <?= $this->order['shipping_lastname']?><br>
+<?= $this->order['shipping_address1']?><br>
+ <? echo $this->order['shipping_address2']?$this->order['shipping_address2'].'<br>':''; ?> 
+<?= $this->order['shipping_city']?>,<?= $this->order['shipping_state']?>,<?= $this->order['shipping_zipcode']?><br>
+<?= $this->order['shipping_country']?><br>
+<? endif;?>-->
+
+
+<? if (isset($this->shipTo['Address'])):?>
+<b>Ship To: </b><br>
+    <?= $this->shipTo['Name'];?> <br>
+    <?= $this->shipTo['Address']['AddressLine'];?> <br>
+    <?= $this->shipTo['Address']['City'];?>, <?= $this->shipTo['Address']['StateProvinceCode'];?>, <?= $this->shipTo['Address']['PostalCode']?> <br>
+    <?= $this->shipTo['Address']['CountryCode'];?><br><br>
+<? endif;?>
+
+
+<table>
+    <tr><th style="width:50%">Item</th><th>Unit Price</th><th>QTY</th><th>Subtotal</th></tr>    
+    <?foreach ($this->cartItems as $item):?>
+        <? if(is_object($item)):?>
+        <tr>        
+            <td style="width:50%"><?= $item->name;?></td>
+            <td align="right">$<?= $item->price;?></td>
+            <td align="right"><?= $item->qty;?></td>
+            <td align="right">$<?= $item->lineCost;?></td>    
+        </tr>
+        <? endif;?>
+    <? endforeach; ?>
+     
+<tr><td colspan='2'></td><td>Subtotal</td><td align="right">$<?= $this->cartItems['subTotal'] ?></td></tr>
+<tr><td colspan='2'></td><td>Shipping</td><td align="right"><?echo isset($this->shippingCost['selected']['rate'])?'$'.$this->shippingCost['selected']['rate'].'('.$this->shippingCost['selected']['service'].')':'' ?></td></tr>
+<?if(!empty($this->salesTax)):?>
+    <tr><td colspan='2'></td><td>WA Sales Tax</td><td>$<?= $this->salesTax['amount'] ?></td></tr>
+<?endif;?>
+<tr><td colspan='2'></td><td><b>Total</b><td align="right"><b>$<?= $this->total?></b></td></tr>
+</table>

@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>	
+	<title>Beaming White Business Center - Categories Admin</title>	
+        <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/default/easyui.css">
+        <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/icon.css">	
+        <!--link rel="stylesheet" type="text/css" href="/biz/public/css/crm.css"-->                  
+        <script src="/biz/public/js/jquery.easyui.min.js"></script>   
+        <script type="text/javascript" src="/biz/public/js/jquery/jquery.edatagrid.js"></script> 
+        
+        <script type="text/javascript">
+		$(function(){
+			$('#dg').edatagrid({
+				url: 'get-category',
+				saveUrl: 'save-category',
+				updateUrl: 'update-category',
+				//destroyUrl: 'destroy_user.php'
+                                onError: function(index,row){
+                                    alert(row.msg);
+                                },
+                                autoSave:true
+			});
+		});
+	</script>
+</head>
+<body>
+	<h2>Category Admin</h2>
+	<div class="demo-info" style="margin-bottom:10px">
+		<div class="demo-tip icon-tip">&nbsp;</div>
+		<div>Double click the row to begin editing.</div>
+	</div>
+	
+	<table id="dg" title="Category DataGrid" style="width:960px;height:auto"
+			toolbar="#toolbar" idField="category_id" 
+			rownumbers="true" fitColumns="true" singleSelect="true">
+		<thead>
+			<tr>    
+				<th field="name" width="35" editor="{type:'validatebox',options:{required:true}}">Category Name</th>
+				<th field="description" width="15" align="right" editor="{type:'validatebox'}">Description</th>
+				<th field="image" width="15" align="right" editor="{type:'validatebox'}">Image</th>
+                                <th field="status" width="15" align="right" editor="{type:'validatebox'}">Active</th>
+				
+			</tr>
+		</thead>
+	</table>
+	<div id="toolbar">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">New</a>		
+		<a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">Save</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">Cancel</a>
+	</div>
+	
+</body>
+</html>

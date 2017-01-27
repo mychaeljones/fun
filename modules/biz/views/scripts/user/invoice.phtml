@@ -1,0 +1,113 @@
+<head>
+<link href='/biz/public/css/invoice.css' rel='stylesheet' />
+</head>
+
+ <?if($this->print == 0):?> 
+  <a class="button" href="/biz/cart/reorder/id/<?= $this->order['order_id']?>">Reorder</a>
+  <a class="button" href="/biz/user/invoice/id/<?= $this->order['order_id']?>/print/<?= $this->order['order_id']?>">Print</a>
+<?endif;?>
+  
+
+    <body <?if($this->print != 0) echo "onload='window.print()'"?>>
+
+    <table class="store">
+    <tr>
+      <td>Beaming White LLC <br />
+        1205 NE 95th St<br />
+        Vancouver, WA 98665<br />
+        Telephone: (866) 944-8315<br />
+        
+      <td align="right" valign="top"><table>
+          <tr>
+            <td><b>Order Date:</b></td>
+            <td><?= date('M d, Y', strtotime($this->order['date_modified'])) ?></td>
+          </tr>
+                    <tr>
+            <td><b>Order ID:</b></td>
+            <td><?= $this->order['order_id']?></td>
+          </tr>
+          
+          <tr>
+            <td><b>Shipping Method:</b></td>
+            <td><?= $this->order['shipping_service'] ?></td>
+          </tr>
+                  </table></td>
+    </tr>
+  </table>
+  <table class="address">
+    <tr class="heading">
+      <td width="50%"><b>To</b></td>
+      <td width="50%"><b>Ship To</b></td>
+    </tr>
+    <tr>
+      <td><? echo $this->order['payment_firstname'].' '.$this->order['payment_lastname'] ?><br />
+          <?= $this->order['payment_address1']?><br />
+          <? if($this->order['payment_address2'] != '') echo $this->order['payment_address2'].'<br />'; ?>
+          <?= $this->order['payment_city']?> <?= $this->order['payment_state']?> <?= $this->order['payment_zipcode']?>
+          <br /><?= $this->order['payment_country']?><br/>
+        <?= $this->order['contact_email']?><br/>
+        <?= $this->order['contact_phone']?>
+      </td>
+      <td><? echo $this->order['shipping_firstname'].' '.$this->order['shipping_lastname'] ?><br />
+          <?= $this->order['shipping_address1']?><br />
+          <? if($this->order['shipping_address2'] != '') echo $this->order['shipping_address2'].'<br />'; ?>
+          <?= $this->order['shipping_city']?> <?= $this->order['shipping_state']?> <?= $this->order['shipping_zipcode']?>
+          <br /><?= $this->order['shipping_country']?><br/>
+        
+      </td>
+    </tr>
+  </table>
+  <table class="product">
+    <tr class="heading">
+      <td><b>Product</b></td>
+      
+      <td align="right"><b>Quantity</b></td>
+      <td align="right"><b>Unit Price</b></td>
+      <td align="right"><b>Total</b></td>
+    </tr>
+    
+    <?foreach ($this->items as $item):?>                       
+                          <? if (is_object($item)):?>
+                            <tr>
+                            <td><?= $item->name?></td>                       
+                            <td align="right"><?= $item->qty?></td>
+                            <td align="right">$<?= number_format((float)$item->price, 2, '.', ',')?></td>
+                            <td align="right">$<?= number_format((float)$item->lineCost, 2, '.', ',')?></td>
+                            </tr>
+                           <?if(!empty($item->options)):?>
+                                <?foreach ($item->options as $option):?>
+                                    <tr>        
+                                    <td align="right"><?= $option['option_description']?></td>                
+                                    <td align="right"><?= $option['quantity']?></td>
+                                    <td colspan="2"></td>
+                                    </tr>
+                                <?endforeach;?>
+                            <?endif?>
+                          <?endif?>
+                            
+                        <?endforeach;?>
+    
+    <tr>
+      <td align="right" colspan="3"><b>Sub-Total:</b></td>
+      <td align="right">$<?= number_format((float)$this->items['subTotal'], 2, '.', ',')?></td>
+    </tr>
+    <tr>
+      <td align="right" colspan="3"><b><?= $this->order['shipping_service'] ?>:</b></td>
+      <td align="right">$<?= number_format((float)$this->order['shipping_rate'], 2, '.', ',')?></td>
+    </tr>
+    <?if($this->order['tax_amount'] > 0):?>
+        <tr>
+            <td align="right" colspan="3"><b>Tax:</b></td>
+            <td align="right">$<?= number_format((float)$this->order['tax_amount'], 2, '.', ',') ?></td>            
+        </tr>
+    <?endif;?>
+        
+    <tr>
+      <td align="right" colspan="3"><b>Total:</b></td>
+      <td align="right">$<?= number_format((float)$this->order['total'], 2, '.', ',')?></td>
+    </tr>
+      </table>
+
+
+    </body>
+

@@ -1,0 +1,77 @@
+<h3>Shopping Cart</h3><br>
+<? if ($this->cartItems['subTotal'] == 0):?>
+Your cart is empty. <br>
+To add an item to your cart, start browsing through products. 
+When you find something you like, click the "Add to Cart" button and the item will be placed here until you check out.<br>
+<a href="/biz/product">Continue To Shop</a>
+
+<? else: ?>
+<table class="item-summary" width="800px">
+    <thead>
+        <tr><th>Cart Items</th><th align="right">Unit Price</th><th align="right">Quantity</th><th align="right">Total</th><th></th></tr></thead>
+    <tbody>
+    
+    <?foreach ($this->cartItems as $item):?>
+        <? if(is_object($item)):?>        
+        <tr>        
+            <td><a href="/biz/product/detail/id/<?= $item->productId?>"><?= $item->name;?></a></td>
+            <td align="right">$<?= number_format((float)$item->price, 2, '.', '');?></td>
+            <td align="right">
+                <?if(empty($item->options)):?>
+                    <form action="/biz/cart/update" method="POST">
+                    <span style="float:right;">
+                    <input style="text-align: right; width:55px;margin-right: 5px;" type="text" name="quantity" value="<?= $item->qty;?>">
+                    <input type="hidden" name="productId" value="<?= $item->productId ?>">
+                    <input type="submit" value="Update" class="smallButton">
+                    </span>
+                    </form>
+                <? else: ?>
+                    <?= $item->qty;?>
+               <?endif ?>
+            </td>                      
+            <td align="right">$<?= number_format((float)$item->lineCost, 2, '.', ''); ?></td>    
+            <td align="center"><a href="/biz/cart/remove/id/<?= $item->productId ?>" class="button">remove</a></td>    
+        </tr>
+        <?if(!empty($item->options)):?>
+            <?foreach ($item->options as $option):?>
+                <tr>        
+                <td colspan='2'><?= $option['descriptions']?></td>                
+                <td>                   
+                        <form action="/biz/cart/update" method="POST">
+                            <span style="float:right;">
+                            <input style="text-align: right; width:55px;margin-right: 5px;" type="text" name="quantity" value="<?= $option['qty'];?>">
+                            <input type="hidden" name="productId" value="<?= $item->productId ?>">
+                            
+                            <? foreach($option['values'] as $value):?>
+                                  <input type="hidden" name="option[]" value="<?= $value?>">
+                            <? endforeach;?>
+                          <input type="submit" value="Update" class="smallButton">
+                            </span>
+                        </form>                                       
+                </td>
+                <td></td>
+                <td align="center">
+                   
+                     <form action="/biz/cart/remove" method="POST">
+                            <input type="hidden" name="id" value="<?= $item->productId ?>">                            
+                            <? foreach($option['values'] as $value):?>
+                                  <input type="hidden" name="options[]" value="<?= $value?>">
+                            <? endforeach;?>
+                          <input type="submit" value="Remove" class="smallButton">                         
+                    </form> 
+                </td>          
+               
+                </tr>
+            <?endforeach;?>
+        <?endif?>
+        
+        <? endif;?>
+    <? endforeach; ?>
+        <!--tr><td colspan='2'></td><td><input type="submit" value="Update"></td></tr-->
+    
+    <tr><td align="right" colspan='3' style="border:none;"><h5>Subtotal</h5></td><td align="right" style="border:none;"><h5>$<?= number_format((float)$this->cartItems['subTotal'], 2, '.', ''); ?></h5></td></tr>
+    </tbody>
+</table>
+<a class="button" href="/biz/checkout/shipping">Check Out</a>
+    
+<?endif;?>

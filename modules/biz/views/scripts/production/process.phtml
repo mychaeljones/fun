@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+     
+    <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="/biz/public/css/crm.css">    
+    <!--script src="/biz/public/js/jquery.easyui.min.js"></script-->
+    <!--script src="/biz/public/js/jquery/easyui/plugins/jquery.datagrid-detailview.js"></script-->
+</head>
+<body>
+    <?= $this->action('construction', 'production'); ?>
+	<h2>Orders: in-process | Total: <?= sizeof($this->orders)?></h2>
+	<div class="demo-info" style="margin-bottom:10px">
+		<div class="demo-tip icon-tip">&nbsp;</div>
+		<div>Click the expand button to expand row and view details.</div>
+	</div>
+        
+            <? foreach ($this->orders as $order):?>
+            <div id="order_<?= $order['order_id'] ?>" class="order">
+                 <? $ordersClass = new Application_Model_Order; ?>
+                <span class="summary">
+                    <span style="float:left; width: 400px;">
+                        <span class="spacing">Order Number:<?= $order['order_id'] ?></span>
+                    <span class="spacing">Customer Name: <?=$order['payment_firstname']?> <?=$order['payment_lastname']?> </span>
+                    </span>
+                    <span class="spacing">Order Total: $<?=$order['total'];?></span>
+                    <span class="spacing">Order Date: <?=$order['date_modified'];?></span>                    
+                    <br>
+                </span>
+                <span class="detail">                
+                    <span style="float:left; width: 400px;">
+                    Ship To: <br>
+                    <?= $order['shipping_firstname'] ?> <?= $order['shipping_lastname'] ?><br>
+                    <?= $order['shipping_address1'] ?><br>
+                    <? echo !empty($order['shipping_address2'])?$order['shipping_address2'].'<br>':'' ?>
+                    <?= $order['shipping_city'] ?>, <?= $order['shipping_state'] ?>,<?= $order['shipping_zipcode']?><br>
+                    <?= $order['shipping_country']?><br>
+                    Shipping Service: <br>
+                    <?= $order['shipping_service']?><br>
+                    </span>
+                    <span style="width: 400px;">
+                    Bill To: <br>
+                    <?= $order['payment_firstname'] ?> <?= $order['payment_lastname'] ?><br>
+                    <?= $order['payment_address1'] ?><br>
+                    <? echo !empty($order['payment_address2'])?$order['payment_address2'].'<br>':'' ?>
+                    <?= $order['payment_city'] ?> <?= $order['payment_state'] ?> <?= $order['payment_zipcode']?><br>
+                    <?= $order['payment_country']?>  <br>
+                    Payment Method: <?= $order['payment_method']?> <br>
+                    Payment Transaction Id:<?= $order['payment_transactionId']?>
+                    
+                    </span>   
+                    <div style="clear:both"></div>
+                </span>
+                <div>
+                    <br>
+                     
+                     <?$items = $ordersClass->get_invoice_items($order['order_id']);?>
+                    Items:<br>
+                    <table width="400" border="1"  cellpadding="2" class="product">
+                        <tr><th width="70%">Item Name</th><th>Quantity</th></tr>
+                        <?foreach ($items as $item):?>                       
+                          <? if (is_object($item)):?>
+                       
+                            <tr class="item"><td width="70%"><?= $item->name?></td>
+                       
+                            <td align="right"><?= $item->qty?></td></tr>
+                           <?if(!empty($item->options)):?>
+                                <?foreach ($item->options as $option):?>
+                                    <tr>        
+                                    <td><?= $option['option_description']?></td>                
+                                    <td align="right"><?= $option['quantity']?></td>
+                                                                       </tr>
+                                <?endforeach;?>
+                            <?endif?>
+                          <?endif?>
+                            
+                        <?endforeach;?>
+                    </table>
+                   Send To:<select id="status_<?=$order['order_id'] ?>" class="status">
+                                <option value="shipping">Shipping</option>
+                                <option value="pending">Pending</option>                                
+                            </select> 
+                    <a class="button changeStatus" id="change_<?=$order['order_id']?>">Go</a> <br>
+                    <a class="button add_notes" id="notes_<?= $order['order_id']?>" >Add Internal Notes</a> <br>
+                </div>
+                                
+                    
+                <?if ($order['comment'] != ''):?> 
+                    <span class='highlight'>Customer Notes: <?=$order['comment'];?></span>
+                <?endif;?>
+                <br>
+                <b>Internal Notes:</b>
+                 <div id="internal_<?=$order['order_id']?>">  
+                  
+                    <?$notes = $ordersClass->getInternalNotes($order['order_id']);?>
+                    <? foreach($notes as $note):?>
+                       <?echo  $note['enter_time'] . ' '. $note['author'].': '.$note['notes'].'<br>';?>
+                    <?endforeach;?>
+                </div>
+            </div>
+           
+            <? endforeach;?>       
+        
+        <div id="dialog_add_notes">
+            <div id="add_notes"></div>
+        </div>
+	
+	<!--table id="dg" style="width:800px;height:auto"
+			url="get-process"
+			pagination="true" sortName="order_id" sortOrder="desc"
+			title="In-Process Orders"
+			singleSelect="true" fitColumns="true">
+		<thead>
+			<tr>
+				<th field="order_id" width="40">Order ID</th>
+				<th field="payment_firstname" width="100">First Name</th>
+                                <th field="payment_lastname" width="100">Last Name</th>                                
+				<th field="total" align="right" width="80">Total</th>
+                                <th field="date_modified" width="100">Submit Time</th>				
+			</tr>
+		</thead>
+	</table-->
+        
+              
+	<script type="text/javascript">
+		$(function(){
+                   
+                    $('.changeStatus').bind('click', function(e){                        
+                       id = ($(this).attr("id")).split("_");                      
+                      // alert($('#status_' + id[1]).val());
+                       $.post('change-status', 
+                                {"order_id": id[1],
+                                 "status":$('#status_' + id[1]).val()
+                                },
+                                function(data){
+                                    if (data == 'success') {
+                                        $('#order_'+id[1]).hide();
+                                    }
+                                }
+                            )
+                    });
+                    
+        $('.add_notes').bind('click', function(e){   
+            id = ($(this).attr("id")).split("_");                     
+            $('#add_addnotes').html('');            
+            $('#add_notes').load('/biz/production/addnotes/id/' + id[1]);
+	    $('#dialog_add_notes').dialog('open');
+       });           
+
+    $('#dialog_add_notes').dialog({
+      		title: 'Add notes',
+		autoOpen:false,
+		width: 550,
+		maxWidth:600, 
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    'Add Notes': function() {
+                      
+                       // e.preventDefault();
+			dataString = $("#notes").serialize();                    
+				$.ajax({
+                                    
+				type: "POST",
+				url: '/biz/production/addnotes',
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                                    if (data != '') {
+                                        alert(id[1]);
+                                       // $("#internal_"+ id[1]).val(data);                                       
+                                        $('#internal_'+id[1]).prepend(data);
+                                        $("#dialog_add_notes").dialog('close');
+                                     }
+                                  /* if (data != 'Please enter all required fields') {                                   
+                                        $("#dialog_add_address").dialog('close');                                         
+                                        $("#tabs" ).tabs('load',1 );                                    
+                                     } else {
+                                         $("#message").html(data);                               
+                                     }*/
+				}
+			});
+                    },
+		    Cancel: function(){
+			$('#add_notes').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+			/*$('#dg').datagrid({
+				view: detailview,
+				detailFormatter:function(index,row){
+					return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+				},
+				onExpandRow: function(index,row){
+					$('#ddv-'+index).panel({
+						border:false,
+						cache:false,
+						href:'get-process-detail/id/'+row.order_id,
+						onLoad:function(){
+							$('#dg').datagrid('fixDetailRowHeight',index);
+						}
+					});
+					$('#dg').datagrid('fixDetailRowHeight',index);
+				}
+			});*/
+                       // $('.detail').hide();
+		});
+	</script>	
+</body>
+</html>

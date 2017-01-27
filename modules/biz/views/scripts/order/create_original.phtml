@@ -1,0 +1,98 @@
+<h5>Order Creation Form</h5>
+<table id="orderForm">
+    <tbody>
+    <tr><td>Contact Email:</td>
+        <td><input type="text" name="email" id="email"></td>        
+    </tr>    
+          
+    <tr id="row1"><th>Quantity</th><th>Product</th><th>Unit Price</th></tr>
+    <tr><td><input type="text"  size="5" name="quantity[]" id="quantity1"></td>
+    <td><input type="text" size="50" name="product[]" id="product1" class="autocomplete_product"></td>
+    <td><input type="text" name="unit_price[]" id="unitprice1"></td>
+    </tr>
+  
+    <tr id="row2" class="tr_clone"> 
+    <td><input type="text" size="5"  name="quantity[]" id="quantity2"></td>
+    <td><input type="text" size="50" name="product[]" class="autocomplete_product" id="product2"></td>
+    <td><input type="text" name="unit_price[]" id="unitprice2"></td>
+    <td><input type="button" name="add" value="Add" class="tr_clone_add"></td>
+    </tr>   
+    
+   </tbody>     
+</table>
+
+<script>
+    $(document).ready(function() {	
+      /* $('#email').change(function() {
+          $.post(
+                'customer-info',
+                {email: $("#email").val()},
+                function(response) {                            
+                    if (response != 'na') {
+                       $("#customerInfo").html('<tr><td>Business Name</td></tr>');
+                    }
+                },
+                'html'
+          )           
+       });
+        */
+        
+        var regex = /^(.*)(\d)+$/i;
+        var cindex = 2;
+        $("input.tr_clone_add").on('click', function() {
+            var $tr    = $(this).closest('.tr_clone');
+            var $clone = $tr.clone(true);
+            cindex++;
+            $clone.find(':text').val('');
+            $clone.attr('id', 'row'+(cindex) ); //update row id if required          
+             
+            //update ids of elements in row
+            $clone.find("*").each(function() {
+                    var id = this.id || "";
+                    var match = id.match(regex) || [];
+                    if (match.length == 3) {
+                        this.id = match[1] + (cindex);
+                    } 
+                  //  alert(match[1]);
+                    if(match[1] == 'product') {
+                        enable_autocomplete($('#'+ (this.id)));
+                    }
+            });
+            //enable_autocomplete($('.autocomplete_product:last'));
+            $tr.after($clone);          
+          //  alert($("#input.autocomplete_product").val());
+           
+         });
+     
+         enable_autocomplete($('.autocomplete_product'));
+        
+	/*$( ".autocomplete_product" ).autocomplete({
+		source: function(request, response)
+		{
+			$.post(
+				'/biz/product/autosuggest',
+				{ queryString: request.term, field: this.element.context.id},
+				function(list) { response(list); },
+				'json'
+			);
+		},
+		minLength: 2
+	});*/
+        
+        function enable_autocomplete(InputField) {
+            $(InputField).autocomplete({
+                source: function(request, response)
+		{
+			$.post(
+				'/biz/product/autosuggest',
+				{ queryString: request.term, field: this.element.context.id},
+				function(list) { response(list); },
+				'json'
+			);
+		},
+		minLength: 2
+            });
+        }
+
+    });
+</script>

@@ -1,0 +1,312 @@
+<script type="text/javascript" src="/biz/public/js/jquery/jquery.countdownTimer.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/biz/public/css/jquery.countdownTimer.css" />
+<style>
+#wrap {
+    margin: 0 auto;
+    width: 70%;
+}
+    
+.qa {
+    margin-bottom: 65px;   
+}
+
+.questions {
+    margin-bottom: 15px;
+}
+    
+p {
+    margin: 0px;
+}
+</style>
+<hr />
+<div id="countdowntimer" style="position: fixed; float: left; bottom: 5px; right: 15px;">Time Remaining: <span id="future_date"><span></div>
+<div id="wrap">
+    <form name="exam" id="examform" action="exam-results" method="POST">
+        <div class="qa">
+            <div id="q1" class="questions">
+                <h3>1. What is the concentration limit in the EU?</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[0][0]" value="1">Up to 1% hp for non-dental professionals and 6% hp for dental professionals</p>
+                <p><input type="checkbox" name="q[0][1]" value="1">Up to 0.1% hp for non-dental professionals and 6% hp for dental professionals</p>
+                <p><input type="checkbox" name="q[0][2]" value="1">Up to 0.1% hp for non-dental professionals and unlimited for dental professionals</p>
+                <p><input type="checkbox" name="q[0][3]" value="1">There is no concentration limit both for non-dental professionals and dental professionals</p>
+            </div>
+        </div>
+        
+        <div class="qa">
+            <div id="q2" class="questions">
+                <h3>2. How does sodium percarbonate gel whiten?</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[1][0]" value="1">It opens up the pores of the enamel so oxygen particles penetrate and go into the dentin (layer underneath the enamel)</p>
+                <p><input type="checkbox" name="q[1][1]" value="1">The pores of the enamel remain closed and the dentin is not reached. It is a powerful cleaner which whitens the surface of the teeth</p>
+            </div>
+        </div>
+            
+        <div class="qa">
+            <div id="q3" class="questions">
+                <h3>3. Tick the right answer(s) concerning the Self-Administered Kit.</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[2][0]" value="1">It is the most recommended way to practice teeth whitening in the UK to avoid trouble with the General Dental Council (GDC)</p>
+                <p><input type="checkbox" name="q[2][1]" value="1">There is no direct contact between the customer’s mouth and you</p>
+                <p><input type="checkbox" name="q[2][2]" value="1">You apply the gel directly on the customer’s teeth</p>
+                <p><input type="checkbox" name="q[2][3]" value="1">You need to fill the tray with gel and hand it to the customer</p>
+                <p><input type="checkbox" name="q[2][4]" value="1">The kit comes with a special waiver</p>
+                <p><input type="checkbox" name="q[2][5]" value="1">The person selling the kit must be a dental professional registered with the GDC</p>
+                <p><input type="checkbox" name="q[2][6]" value="1">No dental advice and diagnosis are provided</p>
+                <p><input type="checkbox" name="q[2][7]" value="1">The kit can be used at home or in a location</p>
+            </div>
+        </div>
+            
+        <div class="qa">
+            <div id="q4" class="questions">
+                <h3>4. According to the General Dental Council (GDC), non-dental professionals can legally paint the gel on the customer’s teeth as long as the gel complies with EU legislation (up to 0.1% H2O2).</h3>
+            </div>
+            <div class="answers">
+                <p><input type="radio" name="q[3][0]" value="0">Yes</p>
+                <p><input type="radio" name="q[3][0]" value="1">No</p>
+            </div>
+        </div>
+
+        <div class="qa">
+            <div id="q5" class="questions">
+                <h3>5. I am not a GDC registered dentist, but I can advertise myself as a:</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[4][0]" value="1">Dental technician</p>
+                <p><input type="checkbox" name="q[4][1]" value="1">Dental expert</p>
+                <p><input type="checkbox" name="q[4][2]" value="1">Fully-qualified teeth whitening technician</p>
+                <p><input type="checkbox" name="q[4][3]" value="1">None. All your marketing material should make clear that you are NOT a dental professional and that you won’t give any advice or diagnose</p>
+            </div>
+        </div>
+            
+        <div class="qa">
+            <div id="q6" class="questions">
+                <h3>6. In Europe, tooth whiteners are classified as:</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[5][0]" value="1">Cosmetics</p>
+                <p><input type="checkbox" name="q[5][1]" value="1">Medical devices</p>
+                <p><input type="checkbox" name="q[5][2]" value="1">Pharmaceutical products</p>
+                <p><input type="checkbox" name="q[5][3]" value="1">Hygiene products</p>
+            </div>
+        </div>
+
+        <div class="qa">
+            <div id="q7" class="questions">
+                <h3>7. According to the EU legislation, dental background is required when:</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[6][0]" value="1">Using gels containing less than 0.1% H2O</p>
+                <p><input type="checkbox" name="q[6][1]" value="1">Using gels between 0.1% and 6% H2O2</p>
+                <p><input type="checkbox" name="q[6][2]" value="1">Using gels containing more than 6% H2O2</p>
+                <p><input type="checkbox" name="q[6][3]" value="1">No dental background is required regardless of concentration</p>
+            </div>
+        </div>
+
+        <div class="qa">
+            <div id="q8" class="questions">
+                <h3>8. What is the maximum concentration of carbamide peroxide allowed in the EU (for dental professionals only)?</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[7][0]" value="1">6%</p>
+                <p><input type="checkbox" name="q[7][1]" value="1">16%</p>
+                <p><input type="checkbox" name="q[7][2]" value="1">25%</p>
+                <p><input type="checkbox" name="q[7][3]" value="1">0.1</p>
+            </div>
+        </div>
+            
+        <div class="qa">
+            <div id="q9" class="questions">
+                <h3>9. The General Dental Council (GDC)’s position is in line with what the EU Commission says regarding who can perform teeth whitening.</h3>
+            </div>
+            <div class="answers">
+                <p><input type="radio" name="q[8][0]" value="0">Yes</p>
+                <p><input type="radio" name="q[8][0]" value="1">No</p>
+            </div>
+        </div>
+        
+        <div class="qa">
+            <div id="q10" class="questions">
+                <h3>10. What kind of lamp is used during the Beaming White cosmetic teeth whitening?</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[9][0]" value="1">UV</p>
+                <p><input type="checkbox" name="q[9][1]" value="1">Laser</p>
+                <p><input type="checkbox" name="q[9][2]" value="1">Blue LED</p>
+                <p><input type="checkbox" name="q[9][3]" value="1">Halogen</p>
+                <p><input type="checkbox" name="q[9][4]" value="1">Plasma</p>
+            </div>
+        </div>
+        
+        <div class="qa">
+            <div id="q11" class="questions">
+                <h3>11. I can use the word LASER in my advertising material.</h3>
+            </div>
+            <div class="answers">
+                <p><input type="radio" name="q[10][0]" value="0">Yes, my lamp is a cold laser.</p>
+                <p><input type="radio" name="q[10][0]" value="1">No, LED and laser are 2 completely different types of lights.</p>
+            </div>
+        </div>
+        
+        <div class="qa">
+            <div id="q12" class="questions">
+                <h3>12. What are the main differences between a LED light and a laser light?</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[11][0]" value="1">LED light gives better results than laser</p>
+                <p><input type="checkbox" name="q[11][1]" value="1">Laser light can be used by non-dental professionals</p>
+                <p><input type="checkbox" name="q[11][2]" value="1">LED doesn’t emit heat whereas laser does</p>
+                <p><input type="checkbox" name="q[11][3]" value="1">LED is safer than laser</p>
+                <p><input type="checkbox" name="q[11][4]" value="1">There are no differences between them</p>
+            </div>
+        </div>
+        
+        <div class="qa">
+            <div id="q13" class="questions">
+                <h3>13. According to the UK waiver, teeth whitening treatments are not recommended for:</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[12][0]" value="1">Pregnant or lactating women</p>
+                <p><input type="checkbox" name="q[12][1]" value="1">People over 18 years old</p>
+                <p><input type="checkbox" name="q[12][2]" value="1">People under the age of 18</p>
+                <p><input type="checkbox" name="q[12][3]" value="1">People who wear braces</p>
+                <p><input type="checkbox" name="q[12][4]" value="1">Everybody is eligible, there are no restrictions</p>
+            </div>
+        </div>
+        
+        <div class="qa">
+            <div id="q14" class="questions">
+                <h3>14. What are the characteristics of sodium percarbonate?</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[13][0]" value="1">Slow speed</p>
+                <p><input type="checkbox" name="q[13][1]" value="1">Immediate and very good results</p>
+                <p><input type="checkbox" name="q[13][2]" value="1">Long duration of results</p>
+                <p><input type="checkbox" name="q[13][3]" value="1">It has been classified as CMR by the European Authorities</p>
+            </div>
+        </div>
+            
+        <div class="qa">
+            <div id="q15" class="questions">
+                <h3>15. What are the typical side effects of sodium percarbonate?</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[14][0]" value="1">Gum irritation</p>
+                <p><input type="checkbox" name="q[14][1]" value="1">Tooth sensitivity</p>
+                <p><input type="checkbox" name="q[14][2]" value="1">None but some people might be allergic to one of the ingredients (e.g. propylene glycol)</p>
+            </div>
+        </div>
+
+        <div class="qa">        
+            <div id="q16" class="questions">
+            <h3>16a. Sodium percarbonate whitens the surface of the teeth only.</h3>
+            </div>
+            <div class="answers">
+                <p><input type="radio" name="q[15][0]" value="1">Right</p>
+                <p><input type="radio" name="q[15][0]" value="0">Wrong</p>
+            </div>
+        </div>
+        
+        <div class="qa">
+            <div id="q16a" class="questions">
+            <h3>16b. Sodium percarbonate opens up the pores of the enamel.</h3>
+            </div>
+            <div class="answers">
+                <p><input type="radio" name="q[15][1]" value="1">Right</p>
+                <p><input type="radio" name="q[15][1]" value="0">Wrong</p>
+            </div>
+        </div>
+        
+        <div class="qa">
+            <div id="q16b" class="questions">
+                <h3>16c. Sodium percarbonate cannot demineralize teeth.</h3>
+            </div>
+            <div class="answers">
+                <p><input type="radio" name="q[15][2]" value="1">Right</p>
+                <p><input type="radio" name="q[15][2]" value="0">Wrong</p>
+            </div>
+        </div>
+        
+        <div class="qa">
+            <div id="q16c" class="questions">
+                <h3>16d. Sodium percarbonate can dehydrate teeth.</h3>
+            </div>
+            <div class="answers">
+                <p><input type="radio" name="q[15][3]" value="1">Right</p>
+                <p><input type="radio" name="q[15][3]" value="0">Wrong</p>
+            </div>
+            
+        </div>
+        
+        <div class="qa">
+            <div id="q16d" class="questions">
+                <h3>17. What are the characteristic stains caused by the use of tetracycline (antibiotics) under the age of 7?</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[16][0]" value="1">White spots</p>
+                <p><input type="checkbox" name="q[16][1]" value="1">Yellow-brown staining</p>
+                <p><input type="checkbox" name="q[16][2]" value="1">Blue-grey staining</p>
+                <p><input type="checkbox" name="q[16][3]" value="1">No stains</p>
+            </div>
+        </div>
+
+        <div class="qa">
+            <div id="q18" class="questions">
+                <h3>18. White spots or streaks appear after a whitening treatment.</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[17][0]" value="1">They are most likely calcium deposits, which are part of the enamel, and are simply brought out by the gel</p>
+                <p><input type="checkbox" name="q[17][1]" value="1">They were not part of the enamel before and are caused by the gel</p>
+                <p><input type="checkbox" name="q[17][2]" value="1">They will diminish as soon as the teeth become “dirty” again</p>
+                <p><input type="checkbox" name="q[17][3]" value="1">They won’t diminish over time</p>
+            </div>
+        </div>
+
+        <div class="qa">
+            <div id="q19" class="questions">
+                <h3>19. A dark dead tooth can be restored by:</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[18][0]" value="1">Internal bleaching (by dentists only)</p>
+                <p><input type="checkbox" name="q[18][1]" value="1">Using a self-administered kit with sodium percarbonate</p>
+                <p><input type="checkbox" name="q[18][2]" value="1">Placing a porcelain veneer on the tooth (by dentists only)</p>
+                <p><input type="checkbox" name="q[18][3]" value="1">Using a teeth whitening pen with carbamide peroxide</p>
+            </div>
+        </div>
+
+        <div class="qa">
+            <div id="q20" class="questions">
+                <h3>20. When using non-peroxide based gels:</h3>
+            </div>
+            <div class="answers">
+                <p><input type="checkbox" name="q[19][0]" value="1">Results will last as long as when using peroxide gels</p>
+                <p><input type="checkbox" name="q[19][1]" value="1">Results are permanent</p>
+                <p><input type="checkbox" name="q[19][2]" value="1">Results will last longer if I use a maintenance product (after-care pen, tooth whitening foam, etc.)</p>
+                <p><input type="checkbox" name="q[19][3]" value="1">Using a maintenance product is ineffective and not recommended</p>
+            </div>
+        </div>
+        <input type="submit" value="submit">
+    </form>
+</div>
+<br />
+<hr />
+
+<script type="text/javascript">
+$(function(){
+    $('#future_date').countdowntimer({
+        minutes : "20",
+        size : "sm"
+    });
+});
+</script>
+<script>    
+$(document).ready(function() {
+    window.setTimeout(function(){
+        document.getElementById("examform").submit();
+    }, 1205000);
+
+ });
+</script>

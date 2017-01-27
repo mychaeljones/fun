@@ -1,0 +1,70 @@
+<table>
+    <tr>
+        <th>Enter Notes</th>
+    </tr>
+    <form id ='noteForm' method="post" >            
+        <tr><td>
+               
+                <div id ="commentSubmitArea">
+        <!--span id="loadnote" style ="display:none;"><img src="/shared/images/ajax_wait.gif"></span-->
+                    <span id="commentSection">
+                        <textarea rows="3" cols="56" id="comment" name="notes" onfocus="if (!this._haschanged) {
+                                                    this.value = ''
+                                                }
+                                                ;
+                                                this._haschanged = true;">Add a note</textarea>
+                    </span>
+                    <br/>
+                    <input type='hidden' id="userId" name="userId" value ="<?= $this->user['id'] ?>">
+                    <input type="submit" id="submitComment" name="submitComment" value="Submit" />
+                </div>
+                <br>
+                
+                 <span id="notes">
+                    <?php if ($this->notes): ?>
+                        <?php foreach ($this->notes as $comment): ?>
+                            <br>
+                                <?php echo date('m/d/y g:i a', strtotime($comment['enter_time'])); ?> <?php echo $comment['author']; ?> <br>                                
+                                <?php echo $comment['notes']; ?><br>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </span>
+            </td></tr>
+    </form>
+</table>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+		$("#noteForm").submit(function(e){
+			/*$('#loadnote').show();
+			$('#commentSection').hide();
+        
+*/      
+    
+    if($.trim($('#comment').val()) == '' || $('#comment').val() == 'Add a note') {
+                           alert('Please enter a note');
+                           return false;
+                        }
+
+			e.preventDefault();
+			dataString = $("#noteForm").serialize();
+                  
+				$.ajax({
+                                    
+				type: "POST",
+				url: "/biz/user/notes",
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                                  //  alert (data);
+				 //  $('#loadnote').hide();
+				   //$('#commentSection').show();
+				   $('#notes').prepend(data);
+				   $('#comment').val('');
+				}
+			});
+		});
+		
+	});
+</script>

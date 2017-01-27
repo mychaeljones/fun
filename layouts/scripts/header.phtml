@@ -1,0 +1,24 @@
+<div id="header">   
+    <img src="/biz/public/image/utility/header-bw-logo.png" align="left">
+    
+     <?if(Zend_Auth::getInstance()->hasIdentity()):?>
+    <div style="float: right;">
+        <div id="user_menu">
+             Welcome <?php echo Zend_Auth::getInstance()->getIdentity()->firstname?> |
+                <!--a href="/biz/user/order-history"> Order History </a> |                
+                <a href="/biz/user/profile">My Profile </a> |
+                <a href="/biz/filemanager/my_files" target="_new">File Manager </a> |-->
+                <a href="/biz/user/logout">Log Out</a>               
+        </div>
+   <!--
+        <? if(Zend_Auth::getInstance()->getIdentity() && Zend_Auth::getInstance()->getIdentity()->role =='customer'):?>
+            <div id="cart">
+                <a href="/biz/cart/item-summary"> <?=$this->action('item-count', 'cart');?></a>
+            </div>
+        <? endif;?>   -->
+        <div id="header_title">
+            Business Center
+        </div>
+    </div>
+     <?endif;?>       
+</div>

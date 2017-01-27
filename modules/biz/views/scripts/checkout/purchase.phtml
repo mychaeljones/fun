@@ -1,0 +1,18 @@
+
+<?if($this->paymentOption == 'wu' || $this->paymentOption == 'mg'):?>  
+     <h4>Payment Method: Western Union/Money Gram </h4>
+    <img src="../public/image/payment/wu.jpg" style="margin: 20px 0px 10px 400px;">
+<? endif;?>
+    
+<?if($this->paymentOption == 'wire'):?>    
+    <h4>Payment Method: Wire Transfer </h4>
+    <img src="../public/image/payment/wire.jpg" style="margin: 20px 0px 10px 400px;">
+<? endif;?>
+
+<?=$this->action('showcart', 'cart');?>
+    <form method="POST">
+         Notes to the order: <br>
+        <textarea name="comment" style="width: 400px; height: 50px; vertical-align: top; "></textarea>
+        <br><a href="/biz/checkout/shipping">Back</a>
+        <input type="submit" name="submit" value="Submit" />
+    </form>

@@ -1,0 +1,45 @@
+<?= $this->action('construction', 'production'); ?>
+<form id="productForm" >     
+<table class="account" width="500px;">
+    <thead><tr><th>Selected Product</th><th>Product</th><th>Category</th></tr>
+    </thead>
+     
+<tbody>  
+    <? foreach ($this->products as $product):?>   
+    <? $check = '';?>
+    <? if( !empty($this->userProduct) && in_array($product['product_id'], $this->userProduct)) {$check = 'checked';} ?>
+        <tr><td><input type="checkbox" name="selectedProduct[]" value="<?= $product['product_id'] ?>" <?= $check?>></td>
+            <td><?= $product['name']?></td>
+            <td><?= $product['categoryName']?></td>        
+        </tr>
+    <? endforeach; ?>   
+</tbody>
+
+</table>
+        <input type="hidden" name ="userId" value="<?= $this->userId?>" >
+        <input type="submit" value="Submit">
+</form>
+
+<script>
+    $(function() {
+         $("#productForm").submit(function(e){
+			
+        //check if there is a lead attempt       
+      
+
+			e.preventDefault();
+			formData = $("#productForm").serialize();
+                        //alert (formData);
+				$.ajax({
+                                    
+				type: "POST",
+				url: "/biz/crm/product",
+				data: formData,
+				dataType: 'html',
+				success: function(data) {
+                                   alert(data);
+                                   				}
+			});
+		});
+    });
+</script>

@@ -1,0 +1,85 @@
+<head>     
+     <link rel="stylesheet" type="text/css" href="/biz/public/css/tablesorter.css">	 
+     <script type="text/javascript" src="/biz/public/js/table-sorter/jquery.tablesorter.min.js"></script>  
+     <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/icon.css">
+</head>
+
+<h1>Contact Response Time Report</h1>
+<form method="POST" name="verify">
+    <label for="from"> From:</label> <input name="from" type="text" id="from" maxlength="10" size="10" value="<?php if (isset($_POST['from'])) {
+    echo $_POST['from'];} ?>" /><br>
+    <label for="to">To: </label> <input name="to" type="text" id="to" maxlength="10" size="10" value="<?php if (isset($_POST['to'])) {
+    echo $_POST['to'];} ?>"/><br />
+    
+    <label for="status">Contact Status: </label>
+    <select name="status">    
+        <option value="responded" <? if (!isset($_POST['status']) || $_POST['status'] == 'responded') echo 'selected' ?>>Responded</option>
+        <option value="notResponded" <? if (isset($_POST['status']) && $_POST['status'] == 'notResponded') echo 'selected' ?>>Not Responded</option>
+    </select><br/>
+    
+    <label for="salesRep">Sales Rep: </label> 
+    <select name="rep">    
+        <option value="">All</option>
+        <? foreach ($this->reps as $rep): ?>
+            <option value= "<?= $rep['id'] ?>" <? if (isset($_POST['rep']) && $rep['id'] == $_POST['rep']) echo 'selected' ?>><?= $rep['name'] ?></option>
+        <? endforeach; ?>       
+    </select> 
+    <br /><br />
+    <input name="submit" type="submit" value="Submit" class="button" />   
+</form>
+
+<div class="demo-info" style="margin-bottom:10px">
+    <div class="demo-tip icon-tip">&nbsp;</div>
+    <div>Contact Status: Responded - have been assigned to a sales rep and have new notes after assignment.<br>
+        <span style="margin-left: 24px;">Contact Status: Not Responded - have been assigned to a sales rep but NO new notes after assignment.</span>
+    </div>
+</div>
+<?if (!empty($this->contacts)):?>
+<h2>Summary</h2>
+ <table border="0" cellspacing="0" cellpadding="0" width="50%">
+ 
+    <tr><th>Total Contacts</th><th>Avg Response Time (Hours)</th></tr>    
+    <tr>
+        <td align="right"><?= sizeof($this->contacts)?></td>   
+        <td align="right"><?if($_POST['status'] == 'responded') echo round($this->avgContacts['avgResponseTime'], 0)?></td>    
+    </tr>
+</table>
+
+<h2>Contacts</h2>
+
+ <table class="tablesorter" border="0" cellspacing="0" cellpadding="0">
+     <thead>
+    <tr><th class="header">Business Name</th>
+        <th class="header">Account Owner</th>
+        <th class="header">Email</th>
+        <th class="header">Contact Name</th>
+        <th class="header">Contact Assigned</th>
+        <th class="header">First Contacted</th>
+        <th class="header">Response Time (Hours)</th>
+    </thead>
+    <tbody>
+        <?foreach ($this->contacts as $account):?>    
+        <tr><td><a href="/biz/crm/customer/id/<?= $account['id'] ?>" target="_blank"><?= $account['businessname']?></a></td>
+            <td><?= $account['rep']?></td>
+            <td><?= $account['email']?></td>
+            <td><?= $account['name']?></td>      
+            <td><?= $account['assignTime']?></td>      
+            <td><?= $account['firstContact']?></td>              
+            <td align='right'><?= $account['responseTime']?></td> 
+        </tr>  
+        <?endforeach;?>
+    </tbody>
+</table>
+
+<? elseif(isset($this->isPost)) :?>
+    No accounts found.
+<?endif;?>
+
+<script>
+  $(function() {   
+    $("#from").datepicker({dateFormat: 'yy-mm-dd'});
+    $("#to").datepicker({dateFormat: 'yy-mm-dd'});    
+    $("table").tablesorter({
+    });
+   });
+</script>

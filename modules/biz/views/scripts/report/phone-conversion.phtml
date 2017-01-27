@@ -1,0 +1,77 @@
+<head>     
+     <link rel="stylesheet" type="text/css" href="/biz/public/css/tablesorter.css">	 
+     <script type="text/javascript" src="/biz/public/js/table-sorter/jquery.tablesorter.min.js"></script>  
+     <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/icon.css">
+</head>
+
+<h1>Phone Call Conversion Report</h1>
+<form method="POST" name="verify">
+    <label for="from"> From:</label> <input name="from" type="text" id="from" maxlength="10" size="10" value="<?php if (isset($_POST['from'])) {
+    echo $_POST['from'];} ?>" /><br>
+    <label for="to">To: </label> <input name="to" type="text" id="to" maxlength="10" size="10" value="<?php if (isset($_POST['to'])) {
+    echo $_POST['to'];} ?>"/><br />
+    <label for="salesRep">Sales Rep: </label> <select name="rep">    
+            <option value="">All</option>
+            <? foreach($this->reps as $rep):?>
+                <option value= "<?= $rep['id'] ?>" <? if(isset($_POST['rep']) && $rep['id'] == $_POST['rep']) echo 'selected' ?>><?= $rep['name']?></option>
+            <? endforeach;?>       
+        </select> 
+    <br /><br />
+    <input name="submit" type="submit" value="Submit" class="button" />   
+</form>
+
+<?if (!empty($this->conversions)):?>
+<h2>Summary</h2>
+ <table border="0" cellspacing="0" cellpadding="0">
+    
+    <tr class="header"><th>Total Accounts</th><th>Total Contacts</th><th>Percentage</th></tr>
+    
+    <tr><td align="center"><?echo isset($this->conversions[1]["totalContacts"])?$this->conversions[1]["totalContacts"]:0 ?></td>
+        <td align="center"><?= $this->conversions[0]["totalContacts"] ?></td>           
+        <td align="center"><? if($this->conversions[0]["totalContacts"]> 0) 
+            echo (round($this->conversions[1]['totalContacts']/$this->conversions[0]['totalContacts'], 4) * 100).'%' ?></td>    
+    </tr>
+</table>
+
+<h2>Contacts</h2>
+
+ <table class="tablesorter" border="0" cellspacing="0" cellpadding="0">
+     <thead>
+    <tr>
+        <th class="header">Contact type</th>
+        <th class="header">Business Name</th>
+        <th class="header">Email</th><th class="header">Contact Name</th><th class="header" style="width:15%;">Account Owner</th>
+        <th class="header" style="width:20%;">Converted Time</th><th class="header" style="width:20%;">Created Time</th></tr>
+    </thead>
+    <tbody>
+    <?foreach ($this->accounts as $account):?>
+    
+    <tr>       
+        <td><?= $account['type']?></td>      
+        <td><a href="/biz/crm/customer/id/<?= $account['id']?>" target="_new"><?= $account['businessname']?></a></td>      
+        <td><?= $account['email']?></td>      
+        <td><?= $account['name']?></td>
+        <td style="width:15%;"><?= $account['rep']?></td>      
+        <td style="width:20%;"><?= $account['action_time']?></td>   
+        <td style="width:20%;"><?= $account['created_time']?></td> 
+    </tr>  
+    <?endforeach;?>
+    </tbody>
+</table>
+
+
+<? elseif(isset($this->isPost)) :?>
+    No accounts found.
+
+
+<?endif ?>
+
+<script>
+  $(function() {   
+    $("#from").datepicker({dateFormat: 'yy-mm-dd'});
+    $("#to").datepicker({dateFormat: 'yy-mm-dd'});    
+    $("table").tablesorter({
+
+            });
+   });
+</script>

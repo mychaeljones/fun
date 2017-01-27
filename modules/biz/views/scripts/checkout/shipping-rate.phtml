@@ -1,0 +1,42 @@
+<div style ="clear: both;"></div>
+<div style="margin-top: 20px;"></div>
+<img src="/biz/public/image/utility/ups_logo.gif" style="float:left;margin-right:25px;">
+
+<? if (is_array($this->rates)):?>
+    <? $index = 0;?>
+    <table>
+    <? foreach ($this->rates as $rate):?>
+        <tr>
+            <td><?= $rate["service"]?></td> <td align="right"> $<?= $rate["rate"];?> </td>
+            <td> <? if($this->selected['service'] == $rate["service"]):?>
+               <img src="/biz/public/image/utility/green-check.png" align="right">
+                <? else:?>
+                <a class='smallButton service' id="row_<?= $index;?>">Select</a> 
+            <? endif;?></td>
+        </tr>
+        <? ++$index;?>
+    <? endforeach; ?>
+    </table>  
+<br><a class="button" href="/biz/checkout/billing">Continue</a>
+
+<?endif;?>
+
+
+<? echo isset($this->message)?$this->message:'';?>
+
+
+<script type="text/javascript">
+      $(function(){ 
+        $( ".service" ).click(function() {                 
+            which = (this.id).split("_");
+            $('#shippingOption').load('/biz/checkout/shipping-rate/row/' + which[1] + '/' + Math.random()*Math.random());
+
+            $('#showcart').delay(500).queue(function( nxt ) {
+                $(this).load('/biz/cart/showcart/'+ Math.random()*Math.random());
+                nxt();
+            });
+                     //$("#showcart").load('/biz/cart/showcart/'+ Math.random()*Math.random());
+            });
+     });
+
+</script>

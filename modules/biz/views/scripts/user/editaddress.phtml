@@ -1,0 +1,21 @@
+<h4>Edit Address Information</h4>
+<div id="message"></div>  
+<?=$this->form?>
+
+<script>    
+$(document).ready(function() {
+     $("#country").change(function() {
+            $.ajax({
+                url: '/biz/user/ajax-get-regions',
+                dataType: 'html',
+                type: "POST",
+                data: {country: $(this).val()},
+                success: function(data) {
+                    $('#state').html(data);
+                }
+            });
+
+        });
+
+ });
+</script>

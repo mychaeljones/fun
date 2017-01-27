@@ -1,0 +1,22 @@
+<table>
+    <thead><th>Category</th>
+           <th>File Type</th>
+           <th></th>
+           <th>Subject</th>
+           <th>Action</th>
+    </thead>
+    <tbody>
+    <?foreach($this->files as $file):?>
+            <tr><td><?= $file['category']?></td>
+                <td><?= pathinfo($file['fileName'], PATHINFO_EXTENSION);?></td>
+                <td>                    
+                    <? if(pathinfo($file['fileName'], PATHINFO_EXTENSION) == 'jpg'):?>
+                    <img src= "<?= $this->dir?>thumb_<?= $file['fileName']?>">
+                <? endif;?>
+                </td>
+                <td><?= $file['caption']?></td>
+                <td><a href="<?= $this->dir.$file['fileName']?>" target="new">Download</a></td>                
+            </tr>
+    <? endforeach; ?>
+    </tbody>
+</table>

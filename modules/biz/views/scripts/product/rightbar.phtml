@@ -1,0 +1,10 @@
+<div style="float:right; width:200px; height:1250px;margin-top:-15px; background-image: url('/biz/public/image/utility/allproducts_background.png')">
+    <br><h3>ALL PRODUCTS</h3>
+    <pl>
+    <? foreach ($this->categories as $category):?>
+        <a href="/biz/product/category-detail/id/<?= $category['category_id']?>">
+        <li><?= ucwords($category['name'])?></li>
+        </a>
+    <?endforeach;?>
+    </pl>
+</div>

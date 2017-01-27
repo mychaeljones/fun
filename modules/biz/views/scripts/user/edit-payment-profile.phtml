@@ -1,0 +1,19 @@
+<h4>Edit Card Information</h4>
+<span id="message"></span>
+<?=$this->form?>
+
+ <script>    
+    $(document).ready(function() {
+         $("#country-element #country").change(function() {
+                $.ajax({
+                    url: '/biz/user/ajax-get-regions',
+                    dataType: 'html',
+                    type: "POST",
+                    data: {country: $(this).val()},
+                    success: function(data) {
+                        $('#state-element #state').html(data);
+                    }
+                });
+            });
+     });
+    </script>

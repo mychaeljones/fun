@@ -1,0 +1,168 @@
+<div style="float:right;">    
+<?=$this->action('search', 'crm');?>
+</div>
+
+<?if($this->events):?>
+<div style="float:left;margin-bottom: 5px;">
+   <table>    
+    <?foreach($this->events as $event):?>
+    <tr><td><a target="_blank" href="/biz/crm/customer/id/<?= $event['customer_id']?>"><?=$event['title']?></a>
+        </td>
+        <td align="right"><?= date('g:i A', strtotime($event['start']))?></td></tr>
+    <?endforeach;?>
+    </table>
+</div>
+<?endif;?>
+
+<div style="clear:both;"></div>
+    Rep: <select name="repid" id="repid" style="width:100px;">        
+        <option value="">All </option>
+        <? foreach($this->reps as $reps):?>        
+        <option value="<?= $reps['id']?>" <?if(isset($this->rep) && $this->rep == $reps['id']) echo 'selected';?>><?= $reps['name']?></option>
+        <?endforeach;?>
+    </select>
+       
+    <span style="margin-left: 10px;"></span>       
+    Potential: <select name="pid" id="pid" style="width:100px;">        
+        <option value="">All</option>
+        <? foreach($this->potentials as $key=>$value):?>        
+        <option value="<?= $key?>" <?if(isset($this->pid) && $this->pid == $key) echo 'selected';?>><?= $value?></option>
+        <?endforeach;?>
+    </select>
+    
+    <span style="margin-left: 10px;"></span>       
+    Source: <select name="source" id="source" style="width:100px;">        
+        <option value="">All</option>
+        <? foreach($this->sources as $key=>$value):?>        
+        <option value="<?= $key?>" <?if(isset($this->source) && $this->source == $key) echo 'selected';?>><?= $value?></option>
+        <?endforeach;?>
+    </select>
+    
+     <span style="margin-left: 10px;"></span>       
+    Sold By: <select name="soldBy" id="soldBy" style="width:100px;">        
+        <option value="">All</option>
+        <? foreach($this->soldBys as $key=>$value):?>        
+        <option value="<?= $key?>" <?if(isset($this->soldBy) && $this->soldBy == $key) echo 'selected';?>><?= $value?></option>
+        <?endforeach;?>
+    </select>
+    
+    <span style="margin-left: 10px;"></span>       
+    Last Contacted: <select name="lastAttempt" id="lastAttempt" style="width:100px;">        
+        <option value="">All</option>              
+        <option value="10" <?if(isset($this->lastAttempt) && $this->lastAttempt == 10) echo 'selected';?>>1-10 Days</option>
+        <option value="30" <?if(isset($this->lastAttempt) && $this->lastAttempt == 30) echo 'selected';?>>10-30 Days</option>
+        <option value="60" <?if(isset($this->lastAttempt) && $this->lastAttempt == 60) echo 'selected';?>>30-60 Days</option>
+        <option value="90" <?if(isset($this->lastAttempt) && $this->lastAttempt == 90) echo 'selected';?>>60-90 Days</option>
+        <option value="91" <?if(isset($this->lastAttempt) && $this->lastAttempt == 91) echo 'selected';?>>90+ Days</option>
+    </select>
+      
+
+
+<? 
+$parent_user = $potential =  $source = $soldBy = $lastAttempt = '';
+if(isset($this->rep) && $this->rep !='' ) {
+    $parent_user = (int)$this->rep;
+}
+if(isset($this->pid) && $this->pid !='' ) {
+    $potential = $this->pid;
+}
+if(isset($this->source) && $this->source !='' ) {
+    $source = $this->source;
+}
+if(isset($this->soldBy) && $this->soldBy !='' ) {
+    $soldBy = $this->soldBy;
+}
+if(isset($this->lastAttempt) && $this->lastAttempt !='' ) {
+    $lastAttempt = $this->lastAttempt;
+}
+
+?>
+<div style="clear:both;"></div>
+<table id="dg" title="Leads" style="width:960px;height:auto"
+			data-options="rownumbers:true,pagination:true,pageSize:30,
+                        url:'get-leads/repid/<?= $parent_user?>/pid/<?= $potential?>/source/<?= $source?>/soldBy/<?= $soldBy?>/lastAttempt/<?= $lastAttempt?>',method:'get'">
+ <thead>
+    <tr>
+    <th data-options="field:'id',width:45, formatter:formatAction">Action</th>    
+    <th data-options="field:'rep',width:60,sortable:'true'">Owner</th>
+    <th data-options="field:'businessname',width:120,sortable:'true'">Business Name</th>    
+    <th data-options="field:'firstname',width:75,sortable:'true'">First Name</th>    
+    <th data-options="field:'lastname',width:75,sortable:'true'">Last Name</th>   
+    <th data-options="field:'contactphone',width:110,align:'right',sortable:'true'">Phone</th>
+    <th data-options="field:'email',width:153, sortable:'true'">Email</th>
+    <th data-options="field:'show_time',width:128,sortable:'true'">Created Time</th>
+    <th data-options="field:'enter_time',width:128,sortable:'true'">Last Contacted</th>  
+    <th data-options="field:'state',width:40,sortable:'true'">State</th>    
+    </tr>
+</thead>
+
+</table>
+
+  
+<script type="text/javascript">
+    function formatAction(val,row){    
+            return '<a target="_blank" href= "customer/id/' + val + '">'  + 'Detail </a>';    
+    }
+    function keepSessionAlive() {
+        $.post("ping");
+    }
+    $(function(){       
+         
+         var dg = $('#dg').datagrid({
+             /*filterBtnIconCls:'icon-filter',*/
+              rowStyler:function(index,row){                              
+                if (row.potential == 'Hot') {
+                    return 'background-color:darkred;color:white;';                  
+                }else if (row.potential == 'Warm') {
+                    return 'background-color: darkorange;color:blue;';                  
+                }else if (row.potential == 'Cool') {
+                    return 'background-color: yellow;color:blue;';                  
+                }else if (row.potential == 'Cold') {
+                    return 'background-color: lightyellow;color:blue;';                  
+                }else if (row.potential == 'Big') {
+                    return 'background-color: lawngreen;color:dark;';                  
+                }else if (row.potential == 'Huge') {
+                    return 'background-color: darkgreen;color:white;';                  
+                }
+              }             
+          });   
+          
+          $( "#repid" ).change(function() {  
+              window.location.href = '/biz/crm/leads?repid=' + $( "select[name='repid']" ).val() +'&pid=' + $( "select[name='pid']" ).val() +'&source=' + $( "select[name='source']" ).val() + '&soldBy=' + $( "select[name='soldBy']" ).val() +'&lastAttempt=' + $( "select[name='lastAttempt']" ).val();
+          });
+          
+          $( "#pid" ).change(function() {  
+              window.location.href = '/biz/crm/leads?repid=' + $( "select[name='repid']" ).val() +'&pid=' + $( "select[name='pid']" ).val() +'&source=' + $( "select[name='source']" ).val() + '&soldBy=' + $( "select[name='soldBy']" ).val() +'&lastAttempt=' + $( "select[name='lastAttempt']" ).val();
+          });
+          $( "#source" ).change(function() {  
+              window.location.href = '/biz/crm/leads?repid=' + $( "select[name='repid']" ).val() +'&pid=' + $( "select[name='pid']" ).val() +'&source=' + $( "select[name='source']" ).val() + '&soldBy=' + $( "select[name='soldBy']" ).val() +'&lastAttempt=' + $( "select[name='lastAttempt']" ).val();
+          });
+          $( "#soldBy" ).change(function() {  
+              window.location.href = '/biz/crm/leads?repid=' + $( "select[name='repid']" ).val() +'&pid=' + $( "select[name='pid']" ).val() +'&source=' + $( "select[name='source']" ).val() + '&soldBy=' + $( "select[name='soldBy']" ).val() +'&lastAttempt=' + $( "select[name='lastAttempt']" ).val();
+          });
+          $( "#lastAttempt" ).change(function() {  
+              window.location.href = '/biz/crm/leads?repid=' + $( "select[name='repid']" ).val() +'&pid=' + $( "select[name='pid']" ).val() +'&source=' + $( "select[name='source']" ).val() + '&soldBy=' + $( "select[name='soldBy']" ).val() +'&lastAttempt=' + $( "select[name='lastAttempt']" ).val();
+          });
+          
+         //window.setInterval("keepSessionAlive()", 60000);
+          var timer = setInterval(function(){
+            // Send a keep alive action every 1 minute
+           // var timestamp = new Date().getTime()
+	    $.ajax({
+                  type:	'GET',
+                  cache: false,
+		  url:	'/biz/user/ping',
+		  //data:'timestamp='+timestamp,
+		  success: function(result) {
+                      if(result == 'logout') {
+		            alert('You are currently logged out.');                                                
+                            clearInterval(timer);                             
+                      } else if(result !='' && result !='logout') {
+                          alert(result);
+                      }
+		  }
+		});
+         },60000); //500 is a second
+               
+    })
+</script>

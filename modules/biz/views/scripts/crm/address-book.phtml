@@ -1,0 +1,143 @@
+<a class="add_address" id="add" style="float:right"><img src="/biz/public/image/utility/add.png"></a>
+<? if(!empty($this->addresses)):?>            
+    <? foreach($this->addresses as $address):?>
+<div id="addressSection">
+     <?= $address['firstname']?> <?= $address['lastname']?> 
+     <a class="edit_address" id="edit_<?= $address['address_id']?>"><img src="/biz/public/image/utility/review.png"></a> 
+      
+        <br>
+       <?= $address['address1']?> <br>
+       <? echo $address['address2']?$address['address2'].'<br>':''; ?> 
+       <?= $address['city']?>, <?= $address['state']?> <br> <?= $address['zipcode']?> <br>
+       <?= $address['country']?> <br>
+       
+       <a class="delete" title="<?= $address['address_id']?>"><img src="/biz/public/image/utility/delete.png"></a><br><br>
+</div>
+    <? endforeach;?>  
+
+   
+<? endif; ?>
+<br>
+   
+
+
+
+<div id="dialog_edit_address">
+	<div id="edit_address"></div>
+</div>
+
+<div id="dialog_add_address">
+    <div id="add_address"></div>
+</div>
+
+<script>
+$(function() {    
+       
+    $(".delete").click(function() {           
+        var r=confirm("Delete this address?");
+        if (r==true) {
+            $.post('/biz/crm/delete-address', 
+                                { 
+                                    "id":$(this).attr("title")                      
+                                },
+                         function(data) {                           
+                              $("#tabs" ).tabs('load',1 );
+                         });           
+        }        
+    });
+    
+            
+    $('.edit_address').click(function() {       
+          which = ($(this).attr("id")).split("_");      
+            $('#edit_address').html('');            
+            $('#edit_address').load('/biz/order/editaddress/id/' + which[1]);
+	    $('#dialog_edit_address').dialog('open');
+	});    
+
+   $('#dialog_edit_address').dialog({
+		title: 'Edit Address',
+		autoOpen:false,
+                width: 550,
+		maxWidth:600,            
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    Edit: function() {                      
+                       // e.preventDefault();
+			dataString = $("#address").serialize();                    
+                        $.ajax({                                    
+				type: "POST",
+				url: "/biz/order/editaddress/id/"+which[1],
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                                    if (data != 'Please Enter all required fields') {                                                                          
+                                        $("#dialog_edit_address").dialog('close');
+                                        //$("#tabs" ).tabs( { active: 1 } );
+                                        $("#tabs" ).tabs('load',1 );
+                                       // $("#block_" + which[1]).html(data);
+                                       // $(".select").show();                                 
+                                        //$(".selected").hide();  
+                                        //$("#shippingOption").empty();
+                                     } else {
+                                         $("#message").html(data);                               
+                                     }
+				}
+			});
+                    },
+		    Cancel: function() {
+			$('#edit_address').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+        
+            
+      $('.add_address').bind('click', function(){   
+            $('#add_address').html('');            
+            $('#add_address').load('/biz/order/addaddress/id/' + <?= $this->userId?>);
+	    $('#dialog_add_address').dialog('open');
+       });   
+        
+
+    $('#dialog_add_address').dialog({
+      		title: 'Add Address',
+		autoOpen:false,
+		width: 550,
+		maxWidth:600, 
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    Add: function() {
+                      
+                       // e.preventDefault();
+			dataString = $("#address").serialize();  
+                  
+				$.ajax({
+                                    
+				type: "POST",
+				url: "/biz/order/addaddress/id/"+ <?= $this->userId?>,
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                           
+                                   if (data != 'Please enter all required fields') {                                   
+                                        $("#dialog_add_address").dialog('close');                                         
+                                        $("#tabs" ).tabs('load',1 );                                    
+                                     } else {
+                                         $("#message").html(data);                               
+                                     }
+				}
+			});
+                    },
+		    Cancel: function(){
+			$('#add_address').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+    
+});
+</script>

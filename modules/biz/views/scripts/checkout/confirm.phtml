@@ -1,0 +1,92 @@
+<h5>Review your order</h5>
+    <hr>
+<div style="float:left; width: 40%">    
+    <div class="section">
+        <h2>1. Contact Information:</h2>
+    </div>
+    <div class="checkoutinfo">
+    Email: <?= $this->order['contact_email']?> <a class="button" href="/biz/checkout/shipping">Change</a><br>
+    Contact Phone: <?= $this->order['contact_phone']?> <br>
+    </div>
+    
+    <div class="section">
+        <h2>2. Ship To:</h2>  
+    </div>
+    <div class="checkoutinfo">
+       <?= $this->order['shipping_firstname']?> <?= $this->order['shipping_lastname']?> <a class="button" href="/biz/checkout/shipping">Change</a><br>
+            <?= $this->order['shipping_address1']?> <br>
+            <? echo $this->order['shipping_address2']?$this->order['shipping_address2'].'<br>':''; ?> 
+            <?=$this->order['shipping_city']?>, <?=$this->order['shipping_state']?>, <?=$this->order['shipping_zipcode']?> <br>
+            <?=$this->order['shipping_country']?> <br> 
+    </div>
+    
+    <div class="section">
+        <h2>3. Shipping Method:</h2>  
+    </div>
+    <div class="checkoutinfo">
+         <?= $this->order['shipping_service']?>
+    </div>
+    
+    <div class="section">            
+        <h2>4. Paid by:</h2>
+    </div>
+    
+    <div class="checkoutinfo">
+    <?= $this->order['payment_firstname']?> <?= $this->order['payment_lastname']?> <a class="button" href="/biz/checkout/billing">Change</a><br>
+    <?=$this->order['type'] ?>:  <?= $this->card->cardNumber?> <br>
+    Exp Date:  <?=$this->order['month'] ?>/<?=$this->order['year'] ?> <br>   
+    </div>
+     
+    <form method="post">
+        <div class="section"><h2>5. Notes (optional):</h2></div>        
+        <div class="checkoutinfo">
+        <textarea name="comment" rows="4" cols="42"></textarea><br>
+        </div>
+   
+</div>
+    
+
+<div id='showcart' style="float:right; width:55%;">
+     <div class="section">
+        <h2>Your Cart</h2>
+    </div>
+    
+    <table>
+    <tr><th>Item</th><th>Unit Price</th><th>QTY</th><th>Total</th></tr>    
+    <?foreach ($this->items as $item):?>
+        <? if(is_object($item)):?>
+        <tr>        
+            <td><?= $item->name;?></td>
+            <td align="right">$<?= $item->price;?></td>
+            <td align="right"><?= $item->qty;?></td>
+            <td align="right">$<?= $item->lineCost;?></td>    
+        </tr>
+        <? endif;?>
+   
+   <?if(!empty($item->options)):?>
+            <?foreach ($item->options as $option):?>
+                <tr>        
+                <td colspan='2'><?= $option['descriptions']?></td>                
+                <td align="right"><?= $option['qty']?></td>
+                <td></td>
+                </tr>
+            <?endforeach;?>
+        <?endif?>      
+                    
+   <? endforeach; ?>
+           
+    <tr><td colspan='3'><b>Merchandise total:</b></td><td align="right"><b>$<?= $this->items['subTotal'] ?></b></td></tr>
+    <tr><td colspan='3'><b>Shipping:</b> <?= $this->order['shipping_service']?></td><td align="right"><b>$<?= $this->order['shipping_rate']?></b></td></tr>
+    <tr><td colspan='3'><b>Tax </b></td><td align="right"><b>$<?= $this->order['tax_amount']?></b></td></tr>
+    <tr><td colspan='3'><b>Total</b></td><td align="right"><b>$<?= $this->order['total']?></b></td></tr>
+</table>
+</div> 
+<div style="clear:both; margin-top:10px;"></div>    
+     <div class="section">            
+        <span style="text-align:center;"><h2>Please review your order, enter optional notes, and click Submit Order to confirm.</h2></span>
+    </div>
+    
+    <input type ="submit" class="button" style="margin-left: 44%; margin-top: 2%;" value="Submit Order">        
+    </form>
+
+

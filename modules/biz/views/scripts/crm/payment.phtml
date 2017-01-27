@@ -1,0 +1,144 @@
+<?= $this->action('construction', 'production'); ?>
+
+<?if(isset($this->alert)):?>
+<div class="error"><?= $this->alert;?></div>
+<?endif;?>
+
+<a class="add_card" id="add" style="float:right"><img src="/biz/public/image/utility/add.png"></a>
+<? if (!empty($this->profiles)):?>
+   <?  $request = new Application_Service_AuthorizeNetCIM;?>
+   <? $index = 0?>
+<table class="account" width="380px;">
+    <tr><th>Name</th><th>Last Four Number</th><th>Exp. Date</th><th>Action</th></tr>
+   <?  foreach ($this->profiles as $profile):?>
+   <?       $paymentProfile = $request->getCustomerPaymentProfile($profile['profile_id'], $profile['payment_profile_id']);             
+            $card = $paymentProfile->xml->paymentProfile->payment->creditCard;
+            $billTo = $paymentProfile->xml->paymentProfile->billTo
+   ?>            
+    <tr><td><?= $billTo->firstName?> <?= $billTo->lastName?></td>
+        <td><?= $card->cardNumber ?></td> 
+        <td><?php echo $profile['month'].'/'.$profile['year']?></td>
+        <td><a class="edit_card" id="edit_<?= $profile['user_profile_id']?>"><img src="/biz/public/image/utility/review.png"></a>
+            <a class="delete" title="<?= $profile['user_profile_id']?>"><img src="/biz/public/image/utility/delete.png" style="margin-left: 20px;"></a>
+        </td>
+      <? ++$index;?>
+    </tr>
+<?  endforeach;?>
+     </table>
+<? endif;?>
+
+
+<div id="dialog_edit_card">
+	<div id="edit_card"></div>
+</div>
+
+<div id="dialog_add_card">
+    <div id="add_card"></div>
+</div>
+
+<script>
+$(function() {    
+  
+    $(".delete").click(function() {           
+        var r=confirm("Delete this card?");
+        if (r==true) {
+            $.post('/biz/crm/delete-card', 
+            { 
+                   "id":$(this).attr("title")                      
+                                },
+                         function(data) {                           
+                              $("#tabs" ).tabs('load',2 );
+                         });           
+        }        
+    });
+    
+            
+    $('.edit_card').click(function() {  
+            which = ($(this).attr("id")).split("_");      
+            $('#edit_card').html('');            
+            $('#edit_card').load('/biz/user/edit-payment-profile/id/'+which[1] +'/from/crm');
+	    $('#dialog_edit_card').dialog('open');
+	});    
+
+   $('#dialog_edit_card').dialog({
+		title: 'Edit Payment Card',
+		autoOpen:false,
+                width: 550,
+		maxWidth:600,            
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    Edit: function() {                      
+                       // e.preventDefault();
+			dataString = $("#card").serialize();                    
+                        $.ajax({                                    
+				type: "POST",
+				url: '/biz/user/edit-payment-profile/id/'+which[1] +'/from/crm',
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                                    if (data != 'Please Enter all required fields') {                                                                          
+                                        $("#dialog_edit_card").dialog('close');                                   
+                                        $("#tabs" ).tabs('load',2 );                                       
+                                     } else {
+                                         $("#message").html(data);                               
+                                     }
+				}
+			});
+                    },
+		    Cancel: function() {
+			$('#edit_card').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+        
+            
+      $('.add_card').bind('click', function(){   
+            $('#add_card').html('');            
+            $('#add_card').load('/biz/crm/add-card/id/' + <?=  $this->userId ?> );
+	    $('#dialog_add_card').dialog('open');
+       });   
+        
+
+    $('#dialog_add_card').dialog({
+      		title: 'Add Payment Card',
+		autoOpen:false,
+		width: 550,
+		maxWidth:600, 
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    Add: function() {
+                      
+                       // e.preventDefault();
+			dataString = $("#card").serialize();  
+                  
+				$.ajax({
+                                    
+				type: "POST",
+				url: '/biz/crm/add-card/id/' +  <?= $this->userId ?>,
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                                    //$("#message").html(data);                                         
+                                     if (data != 'Please Enter all required fields') {                                   
+                                        $("#dialog_add_card").dialog('close');                                         
+                                        $("#tabs" ).tabs('load',2 );                                    
+                                     } else { 
+                                         $("#message").html(data);                                         
+                                     }
+				}
+			});
+                    },
+		    Cancel: function(){
+			$('#add_card').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+    
+});
+</script>

@@ -1,0 +1,141 @@
+<a href='/biz/inventory/view'>>>Inventory Orders</a>
+<div style="margin-bottom: 5px;"><h2>Update Inventory Order </h2> 
+            <span style="margin-left: 55%;" class="infoButton view_order_log" id="<?= $this->order['id']?>">View Order Change Log</span>
+</div>
+  
+<? if(!empty($this->error)): ?>   
+    <div class="error"><e><?= $this->error?></e></div>
+<?endif;?>
+
+
+<? if(isset($this->message)):?>
+    <div class="success"><success><?= $this->message?></success></div>    
+<?endif?>
+
+<br>
+<form method="POST">
+    <label for="item">Order Created By</label><?= $this->order['firstname']?><br>
+    <label for="modified_time">Order Created Time</label><?= $this->order['created_time']?><br>
+    <label for="modified_by">Last Modified By</label><?= $this->order['modifiedBy']?><br>
+    <!--label for="modified_time">Last Modified Time</label><?= $this->order['modified_time']?><br-->
+    <label for="quantity_ordered">Quantity Ordered</label><?= $this->order['quantity_ordered']?><br>
+    <label for="quantity_received">Quantity Received</label><?= $this->order['quantity_received']?><br>
+    <label for="quantity_oh_china">China Stock</label> <?= $this->order['quantity_oh_china']?> <br>
+    <label for="total_shipped">Total Shipped</label> <?= $this->order['total_shipped']?> <br>
+    
+    <br>
+    <label for="shipment">Shipment Info</label> 
+                <?if($this->order['quantity_oh_china'] >0):?>
+                    <a class="button" href="/biz/inventory/create-shipment/id/<?= $this->order['id']?>">Create Shipment</a>
+                <?endif;?>
+                <? if(!empty($this->shipment)):?>
+                <table class="account">
+                    <th>Destination</th><th>Quantity</th><th>Depart Date</th><th colspan='2'>Action</th>
+                    <?foreach ($this->shipment as $shipment):?>
+                    <tr><td align="center"><?= $shipment['destination']?></td>
+                        <td align="right"><?= $shipment['quantity']?></td>
+                        <td align="center"><?= $shipment['depart_date']?></td>
+                        <td align="center"><a class="button" href="/biz/inventory/create-shipment/id/<?= $this->order['id']?>/shipment/<?= $shipment['inventory_shipment_id']?>">Detail/Update</a></td>
+                        <td><span class="infoButton view_log" id="<?= $shipment['inventory_shipment_id']?>">View Shipment Log</span></td> 
+                    </tr>
+                    
+                    <?endforeach;?>
+                </table>
+                <?endif;?>
+    <br><br>
+    
+    
+    <label for="item">Item</label><input type="text" size="30" name="item" value = "<?= $this->order['item']?>" > <br> 
+    <label for="priority">Priority</label> <select name="priority">
+        <option value="normal" <?if($this->order['priority'] == 'normal') echo 'selected';?>>Normal</option>
+        <option value="urgent" <?if($this->order['priority'] == 'urgent') echo 'selected';?>>Urgent</option>
+    </select><br>    
+    <label for="specification">Specification</label><textarea name="specification" style="height:50px; width: 400px;" ><?=$this->order['specification']?></textarea><br>
+    <label for="supplier">Supplier </label><input type="text" size="30" name="supplier" value = "<?= $this->order['supplier']?>" ><br>
+    <label for="supplier">Supplier(English)</label><input type="text" size="30" name="supplier_english" value = "<?= $this->order['supplier_english']?>" ><br>
+    
+    <label for="EDD">Estimated Date of Delivery</label> <input type="text"  class="datepicker" size="30" name="EDD" value = "<?= $this->order['EDD']?>" ><br>
+    <label for="EDD">Actual Date of Delivery</label> <input type="text"  class="datepicker" size="30" name="ADD" value = "<?= $this->order['ADD']?>" ><br>
+    
+    <label for="quantity_ordered">Quantity Ordered</label> <input type="text" size="30" name="quantity_ordered" value = "<?= $this->order['quantity_ordered']?>" ><br>
+    <label for="quantity_received">Quantity Received</label> <input type="text" size="30" name="quantity_received" value = "<?= $this->order['quantity_received']?>" ><br><br>
+    <label for="quantity_oh_china">China Stock</label> <?= $this->order['quantity_oh_china']?> <br><br>
+    
+    <label for="total_shipped">Total Shipped</label> <?= $this->order['total_shipped']?> <br><br>
+    
+    <label for="Notes">Order Notes</label> 
+                <? if(isset($this->notes)):?>
+                <div style="margin-left: 200px;">
+                    <?foreach ($this->notes as $note):?>
+                    <?= $note['notes'] ?>
+                    <span style="margin-left: 30px;">-<?= $note['author'] ?> <?= $note['enter_time'] ?></span><br>
+                    <?endforeach;?>
+                </div>
+                <?endif;?>
+    <br>
+    
+    <label for="Notes">New Notes</label>  <textarea name="notes" style="height:100px; width: 400px;" ></textarea><br><br>
+    <input type ="submit" value="Submit" class="button" style="margin-left: 200px;">
+</form>
+<div id="dialog_view_log">
+	<div id="view_log"></div>
+</div>
+<div id="dialog_view_order_log">
+	<div id="view_order_log"></div>
+</div>
+<script>
+$(function() {    
+     $(".datepicker").datepicker({
+            changeYear: true,
+            dateFormat: 'yy-mm-dd'
+        });
+ 
+            
+    $('.view_log').click(function() {                          
+            $('#view_log').html('');            
+            $('#view_log').load('/biz/inventory/log/id/' + $(this).attr("id") + '/type/shipment');
+	    $('#dialog_view_log').dialog('open');
+	});    
+
+   $('#dialog_view_log').dialog({
+		title: 'Change log',
+		autoOpen:false,
+                width: 550,
+		maxWidth:600,            
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    
+		    Close: function() {			
+			$(this).dialog('close');
+                    }
+		}
+	});
+     /***********Order change log***********/
+       $('.view_order_log').click(function() {                          
+            $('#view_order_log').html('');            
+            $('#view_order_log').load('/biz/inventory/log/id/' + $(this).attr("id") + '/type/order');
+	    $('#dialog_view_order_log').dialog('open');
+	});    
+
+   $('#dialog_view_order_log').dialog({
+		title: 'Order Change log',
+		autoOpen:false,
+                width: 550,
+		maxWidth:600,            
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    
+		    Close: function() {			
+			$(this).dialog('close');
+                    }
+		}
+	});
+   
+    
+});
+</script>
+ 

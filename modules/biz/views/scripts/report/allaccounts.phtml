@@ -1,0 +1,170 @@
+<head>     
+     <link rel="stylesheet" type="text/css" href="/biz/public/css/tablesorter.css">	 
+     <script type="text/javascript" src="/biz/public/js/table-sorter/jquery.tablesorter.min.js"></script>  
+     <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/icon.css">
+<style>
+    .selection{
+        border: none;
+    }
+    input {
+        width: 100px;
+    }
+    label {
+        font-weight: bold;
+        width: 100px;
+    }   
+    table.selection td {
+        border-left:none;
+        border-bottom: none;
+        padding: none;
+        vertical-align: middle;
+        text-align: left;
+    }
+    table.tablesorter tr >th, tr>td {
+        border-bottom: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;
+        text-align: center;
+    }
+    table.tablesorter tfoot {
+        font-weight: bold;
+    }
+</style>
+</head>
+
+<h1>Account Information Report</h1>
+<form method="POST" name="verify">
+    <table class="selection">
+        <tr>
+            <td><label>From:</label>
+                <input name="from" type="text" id="from" maxlength="10" size="10" value="<?php if (isset($_POST['from'])) {
+                echo $_POST['from'];} ?>" />
+            </td>
+            <td>                
+                <label>To:</label>  
+                <input name="to" type="text" id="to" maxlength="10" size="10" value="<?php if (isset($_POST['to'])) {
+                echo $_POST['to'];} ?>"/>
+            </td>
+        </tr>
+        <tr>
+            <td><label for="salesRep">Sales Rep: </label> 
+                <select name="rep">    
+                    <option value="">All</option>
+                    <? foreach ($this->reps as $rep): ?>
+                        <option value= "<?= $rep['id'] ?>" <? if (isset($_POST['rep']) && $rep['id'] == $_POST['rep']) echo 'selected' ?>><?= $rep['name'] ?></option>
+                    <? endforeach; ?>       
+                </select>
+            </td>
+            <td><label for="type">Type: </label> 
+                <select name="type">    
+                    <option value="">All</option>
+                    <? foreach ($this->types as $key => $type): ?>
+                        <option value= "<?= $key ?>" <? if (isset($_POST['type']) && $key == $_POST['type']) echo 'selected' ?>><?= $type ?></option>
+                    <? endforeach; ?>       
+                </select>                
+            </td>
+            <td><label for="businesstype">Business Type: </label> 
+                <select name="businesstype">    
+                    <option value="">All</option>
+                    <? foreach ($this->businessTypes as $key => $businessType): ?>
+                        <option value= "<?= $key ?>" <? if (isset($_POST['businesstype']) && $key == $_POST['businesstype']) echo 'selected' ?>><?= $businessType ?></option>
+                    <? endforeach; ?>       
+                </select>                
+            </td>            
+        </tr>
+        <tr> <td><label for="soldBy">Sold By: </label> 
+                <select name="soldBy">    
+                    <option value="">All</option>
+                    <? foreach ($this->soldBys as $key => $soldBy): ?>
+                        <option value= "<?= $key ?>" <? if (isset($_POST['soldBy']) && $key == $_POST['soldBy']) echo 'selected' ?>><?= $soldBy ?></option>
+                    <? endforeach; ?>       
+                </select>
+             </td>
+             <td><label for="source">Source: </label> 
+                <select name="source">    
+                    <option value="">All</option>
+                    <? foreach ($this->sources as $key => $source): ?>
+                        <option value= "<?= $key ?>" <? if (isset($_POST['source']) && $key == $_POST['source']) echo 'selected' ?>><?= $source ?></option>
+                    <? endforeach; ?>       
+                </select>
+             </td>
+             <td><label for="imported">Initial Contact Via: </label> 
+                <select name="imported">    
+                    <option value="">All</option>
+                    <? foreach ($this->contactVias as $key => $contactVia): ?>
+                        <option value= "<?= $key ?>" <? if (isset($_POST['imported']) && $key == $_POST['imported']) echo 'selected' ?>><?=  $contactVia?></option>
+                    <? endforeach; ?>       
+                </select>
+             </td>
+        </tr>
+        <tr>
+            <td><label for="groupBy">Group By: </label> 
+                <select name="groupBy">    
+                    <option value="businessType"  <? if (isset($_POST['groupBy']) && 'businessType' == $_POST['groupBy']) echo 'selected' ?> >Business Type</option>
+                    <option value="country"  <? if (isset($_POST['groupBy']) && 'country' == $_POST['groupBy']) echo 'selected' ?> >Country</option>
+                    <option value="imported"  <? if (isset($_POST['groupBy']) && 'imported' == $_POST['groupBy']) echo 'selected' ?> >Initial Contact Via</option>
+                    <option value="parent_user"  <? if (isset($_POST['groupBy']) && 'parent_user' == $_POST['groupBy']) echo 'selected' ?> >Sales Rep</option>
+                    <option value="soldBy"  <? if (isset($_POST['groupBy']) && 'soldBy' == $_POST['groupBy']) echo 'selected' ?> >Sold By</option>
+                    <option value="source"  <? if (isset($_POST['groupBy']) && 'source' == $_POST['groupBy']) echo 'selected' ?> >Source</option>
+                    <option value="type"  <? if (!isset($_POST['groupBy']) || 'type' == $_POST['groupBy']) echo 'selected' ?> >Type</option>
+                                        <option value="state"  <? if (isset($_POST['groupBy']) && 'state' == $_POST['groupBy']) echo 'selected' ?> >US States</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    
+    <input name="submit" type="submit" value="Submit" class="button" />   
+</form>
+
+<?if (!empty($this->accounts)):?>
+
+
+ <table class="tablesorter" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+        <th>
+             <?= $this->groupBy=='parent_user'?'Sales Rep':$this->groupBy?>
+        </th>
+        <th>Total</th>
+        <th>%</th>
+    </thead>
+    <tbody>
+    <? //var_dump($this->accounts);?>
+    <? $total = array_sum( array_map(
+                 function($element){
+                     return $element['count'];
+                 }, 
+             $this->accounts));
+   ?>
+             <?$count = 0;?>
+    <?foreach ($this->accounts as $key => $account):?>    
+        <tr><td> <? if($this->groupBy =='parent_user') {
+                   foreach($this->reps as $rep) {
+                       if($rep['id'] == $account[$this->groupBy]) echo $rep['name'];
+                   }
+               } else {
+                   echo $account[$this->groupBy]?$account[$this->groupBy]:'Unknown';
+               }
+           ?>  </td>
+            <td style="text-align:right"><?= $account['count']?></td>
+            <td style="text-align:right"><?= round($account['count']/$total, 4) * 100?>%</td>            
+        </tr>  
+    <?endforeach;?>
+    </tbody>
+    <tfoot>
+        <tr><td>Total</td><td style="text-align:right"><?= $total?></td><td style="text-align:right">100%</td>
+        </tr>
+    </tfoot>
+</table>
+
+
+<? elseif(isset($this->isPost)) :?>
+    No accounts found.
+<?endif;?>
+
+<script>
+  $(function() {   
+    $("#from").datepicker({dateFormat: 'yy-mm-dd'});
+    $("#to").datepicker({dateFormat: 'yy-mm-dd'});    
+    $("table").tablesorter({
+    });
+  });
+</script>

@@ -1,0 +1,37 @@
+<div style="margin-top: 10px;"></div>  
+  <a class="button add_address">Add a new address </a><br>
+  <?if(!empty($this->addresses)):?>    
+  <? $counter = 0; ?>
+ 
+        <? foreach($this->addresses as $address):?>   
+             
+             <?php if($counter % 2 == 0):?>
+                 <? $style = "address_odd"?>
+             <?php else:?>
+                 <? $style = "address_even"?>
+             <?php endif;?>
+         
+           <div class="<?= $style;?>">
+             <div id="addressSection" >             
+                <?=$address['firstname']?> <?=$address['lastname']?>, 
+                <br><?=$address['address1']?>
+                <? echo $address['address2']?'<br>'.$address['address2']:''; ?> 
+                <br><?=$address['city']?>, <?=$address['state']?>, <?=$address['zipcode']?>
+                <br><?=$address['country']?> <br><br>
+                <a class="spacing button edit_address" id="edit_<?= $address['address_id']?>">Edit Address</a>           
+            
+            <? $style = "display:none;"; $showSelect = "";?>
+            <?if ($address['address_id'] == $this->selected){
+                    $style = ""; $showSelect = "display: none;"; 
+                }
+            ?>
+            <span class='selected' id="selected_<?= $address['address_id']?>" style="<?= $style?>"><img src="/biz/public/image/utility/green-check.png"></span>            
+            <div class="button select" id="<?= $address['address_id']?>" style="<?= $showSelect?>">
+                SELECT 
+            </div>           
+           </div>
+ 
+        <? ++$counter;?>
+           </div>
+        <? endforeach;?>           
+   <?endif;?>

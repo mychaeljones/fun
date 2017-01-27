@@ -1,0 +1,29 @@
+<div style="margin-left: 20px;">
+<h3>Products</h3>
+<p>You will find all the professional teeth whitening products, equipment, lights, and supplies that you need for a prosperous teeth whitening<br> business right here. Since we are a manufacturer, we are able to offer a wide variety of teeth whitening supplies at very competitive 
+    <br>wholesale prices.</p>
+
+<?$count = 1;?>
+<table style="width:100%;text-align:center">
+<?foreach($this->categories as $category): ?>
+            <?if ($count/3 == 0): ?>
+                <tr>
+            <?endif?>
+                <td>
+                   <a href="/biz/product/category-detail/id/<?= $category['category_id']?>">
+                        <div>                             
+                            <img src="<?=$category['image'];?>" />
+                        </div>
+                        <div style="margin-bottom: 20px;" class="product_title">
+                            <?=$category['name'];?>                           
+                        </div>
+                    </a>
+                    <!--a href='/cart/add/productId/<?=$product['id'];?>'><img src="/public/images/shopping/add-to-cart.gif" style="border:none;margin:0px;" width="104" height="24"></a-->
+                </td>
+           <?if ($count % 3 == 0): ?>
+               </tr>
+           <?endif?>
+        <?++$count?>
+<?endforeach;?>
+ </table>
+</div>

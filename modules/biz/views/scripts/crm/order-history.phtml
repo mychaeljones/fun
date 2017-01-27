@@ -1,0 +1,19 @@
+<script type="text/javascript">	
+	$(document).ready(function(){		
+            //Display Loading Image
+            function Display_Load()
+            {
+                $("#loading").fadeIn(900,0);               
+            }
+            //Hide Loading Image
+            function Hide_Load()
+            {
+                $("#loading").fadeOut('slow');
+            };	
+            Display_Load();	            
+            $("#data").load("/biz/crm/order-history-data/page/1/id/<?= $this->userId?>", Hide_Load());
+       });
+</script>
+	
+<div id="loading" align="center"></div>
+<div id="data"></div>

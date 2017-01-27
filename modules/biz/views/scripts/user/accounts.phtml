@@ -1,0 +1,50 @@
+<h5>Lead:</h5>
+<?  if(!empty($this->pendingUsers)): ?>
+<table>
+     <tr><th>Action</th><th>Account Name</th><th>Name</th><th>Phone</th><th>Email</th></tr>
+    <? foreach($this->pendingUsers as $user):?>    
+    <tr><td><a href="/biz/user/view/id/<?=$user['id'] ?>">View </td></a><td><?= $user["username"];?></td>
+        <td><?= $user["firstname"];?><?= $user["lastname"];?></td>
+         <td><?= $user['contactphone']?></td>
+        <td><?= $user['email']?></td>
+        </tr>
+    <? endforeach; ?>
+</table>
+<?else:?>
+No Lead found.
+<? endif;?>
+
+<h5>My Contacts:</h5>
+<? if(!empty($this->myUsers)): ?>
+<table>
+    <tr><th>Action</th><th>Account Name</th><th>Name</th><th>Phone</th><th>Email</th></tr>
+    <? foreach($this->myUsers as $user):?>    
+    <tr><td><a href="user/edit/id/<?=$user['id'] ?>">View</td></a><td><?= $user["username"];?></td>
+        <td><?= $user["firstname"];?> <?= $user["lastname"];?></td>
+        <td><?= $user['contactphone']?></td>
+        <td><?= $user['email']?></td>
+        </tr>
+    <? endforeach; ?>       
+</table>
+<? else: ?>
+    No customers found.    
+<? endif;?>
+
+    
+    <h5>All active Accounts:</h5>
+<?  if(!empty($this->activeUsers)): ?>
+<table>
+     <tr><th>Action</th><th>Account Name</th><th>Name</th><th>Phone</th><th>Email</th></tr>
+    <? foreach($this->activeUsers as $user):?>    
+    <tr><td><a href="/biz/user/view/id/<?=$user['id'] ?>">View</td></a><td><?= $user["username"];?></td>
+        <td><?= $user["firstname"];?>
+        <?= $user["lastname"];?></td>
+         <td><?= $user['contactphone']?></td>
+        <td><?= $user['email']?></td>
+        </tr>
+    <? endforeach; ?>       
+</table>
+<? else: ?>
+    No customers found.    
+<? endif;?>
+ 

@@ -1,0 +1,49 @@
+<head>   
+    <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/icon.css">	      
+    <script src="/biz/public/js/jquery.easyui.min.js"></script>
+</head>        
+
+   
+<?=$this->action('search', 'crm');?>
+
+<?  if(!empty($this->error)): ?>
+<br>
+<span class= "error"><?= $this->error;?></span>
+<? endif; ?>
+
+<?  if(!empty($this->users)): ?>
+
+
+<table class="easyui-datagrid" style="width:960;height:auto; margin-top: 20px;">   
+ <thead>
+    <tr>
+        <th data-options="field:'action', width:45">Action</th>    
+        <th data-options="field:'rep', width:100">Account Owner</th>
+        <th data-options="field:'name', width:180">Name</th>    
+        <th data-options="field:'type',width:60 ">Type</th>  
+        <th data-options="field:'businessname',width:180">Business Name</th>  
+        <th data-options="field:'phone',width:150,align:'right'">Phone</th>
+        <th data-options="field:'email', width:178,">Email</th> 
+        <th data-options="field:'status'">Status</th> 
+    </tr>
+   
+</thead>
+<tbody>
+      <? foreach($this->users as $user):?>
+        <tr><td><a href="/biz/crm/customer/id/<?=$user['id'] ?>">View </td></a>
+          <td><?= $user["rep"];?></td>
+            <td><?= $user["firstname"];?> <?= $user["lastname"];?></td>
+            <td><?= $user['type'] ?></td>  
+             <td><?= $user['businessname'] ?></td>  
+             <td><?= $user['contactphone']?></td>
+            <td><a href="mailto:<?= $user['email']?>"><?= $user['email']?></a></th></td>
+            <td><?= $user['status']?></td>
+            </tr>
+        <? endforeach; ?>
+    
+</tbody>
+</table>
+<? endif?>
+
+

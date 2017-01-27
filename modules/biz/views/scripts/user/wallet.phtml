@@ -1,0 +1,61 @@
+<? if (!empty($this->profiles)) {
+      $request = new Application_Service_AuthorizeNetCIM;
+?>
+      <table>
+          <tr><th>Card Type</th> <th>Name</th> <th>Number</th><th>Exp date</th><th colspan="2"></th></tr>
+            
+<?  foreach ($this->profiles as $profile) {            
+    
+            $paymentProfile = $request->getCustomerPaymentProfile($profile['profile_id'], $profile['payment_profile_id']); 
+            
+            $card = $paymentProfile->xml->paymentProfile->payment->creditCard;
+            $billTo = $paymentProfile->xml->paymentProfile->billTo
+            ?>            
+                <tr><td><?= $profile['type']?></td><td><?= $billTo->firstName?> <?= $billTo->lastName?></td><td><?= $card->cardNumber ?></td><td><? echo $profile['month'].'/'.$profile['year']  ?><?//= $card->expirationDate?></td>
+                <td><a href="/biz/user/edit-payment-profile/id/<?= $profile['payment_profile_id']?>" class="button">edit</a></td>
+                <td><a class="deleteButton delete" title="<?= $profile['payment_profile_id']?>" >delete</a></td>
+            </tr>    
+            
+<?        }?>
+      </table>
+<a id="add" class="button" style="margin-top: 1%;">Add a new card </a>
+<script>
+    $(function() {    
+        $("#add").click(function() {
+            $("#paymentForm").show();
+        });
+        $(".delete").click(function() {   
+        
+        var r=confirm("Delte this card?");
+        if (r==true) {       
+            window.location.href = "/biz/user/delete-payment/id/" + $(this).attr("title");
+        }             
+    });
+    });
+</script>
+ <? } ?>
+
+<? $style = '';?>
+<?if (!empty($this->profiles)) $style = "style = display:none;" ?>
+<?if (isset($this->dataError)) $style = "style = display:true;" ?>
+
+<div id = 'paymentForm' <?= $style?>>
+    <?= $this->form;?>
+</div>
+
+<script>
+$(function() {       
+     $("#country").change(function() {
+            $.ajax({
+                url: '/biz/user/ajax-get-regions',
+                dataType: 'html',
+                type: "POST",
+                data: {country: $(this).val()},
+                success: function(data) {
+                    $('#state').html(data);
+                }
+            });
+
+        });
+});
+</script>

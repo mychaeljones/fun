@@ -1,0 +1,15 @@
+<table width="800px">
+    <thead><th>Order Date</th><th>Invoice #</th><th>Total Price</th><th>Order Status</th><th></th></thead>
+    <tbody>    
+    <? foreach ($this->orders as $order):?>    
+    <tr><td align="center"><?= date('m/d/Y', strtotime($order['date_modified']))?></td> 
+        <td align="center"><?=$order['order_id']?></td>
+        <td align="right">$<?= number_format((float)$order['total'], 2, '.', ',')?> </td>
+        <td align='center'><?= $order['order_status']?></td>       
+        <td align='center'><a href="/biz/user/invoice/id/<? echo $order['order_id']?>">SELECT</a></td>       
+    </tr>
+    <? endforeach; ?>
+    </tbody>
+</table>
+<?= $this->partial('user/_pagination.phtml', array('page'=>$this->page, 'totalPages'=>$this->totalPages,
+        'url'=>"order-history-data/page/"));?>

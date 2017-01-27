@@ -1,0 +1,52 @@
+<head>     
+     <link rel="stylesheet" type="text/css" href="/biz/public/css/tablesorter.css">	 
+     <script type="text/javascript" src="/biz/public/js/table-sorter/jquery.tablesorter.min.js"></script>  
+     <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/icon.css">
+</head>
+
+<h1>Business Web Form Contact Source Report</h1>
+<form method="POST" name="verify">
+    <label for="from"> From:</label> <input name="from" type="text" id="from" maxlength="10" size="10" value="<?php if (isset($_POST['from'])) {
+    echo $_POST['from'];} ?>" /><br>
+    <label for="to">To: </label> <input name="to" type="text" id="to" maxlength="10" size="10" value="<?php if (isset($_POST['to'])) {
+    echo $_POST['to'];} ?>"/><br />
+    <br />
+    <input name="submit" type="submit" value="Submit" class="button" />   
+</form>
+
+<?if (!empty($this->contacts)):?>
+
+<table class="tablesorter" border="0" cellspacing="0" cellpadding="0" width="75%">
+     <thead>
+    <tr><th style="width:20%;">Count</th>
+        <th style="width:20%;">% of contacts</th>
+        <th style="width:60%;">Web form Source</th>
+    </tr>
+    </thead>
+    <tbody>
+    <? $total = 0;?>
+    <?foreach ($this->contacts as $contact):?>
+    
+    <tr><td style="width:20%;" align="center"><?= $contact['count']?></td>      
+        <td style="width:20%;" align="center"><?= round($contact['count']/$this->totalContacts, 6) * 100?>%</td>      
+        <td style="width:60%;"><?= $contact['source_text']?></td>        
+    </tr>
+    <? $total = $total + $contact['count'];?>
+    <?endforeach;?>
+    <tr><td align="center"><strong>Total: <?= $total?> </strong></td><td align="center"><?= round($total/$this->totalContacts, 6)* 100?>%</td><td></td></tr>
+    </tbody>
+</table>
+
+<? elseif(isset($this->isPost)) :?>
+    No contacts found.
+<?endif;?>
+
+<script>
+  $(function() {   
+    $("#from").datepicker({dateFormat: 'yy-mm-dd'});
+    $("#to").datepicker({dateFormat: 'yy-mm-dd'});    
+     $("table").tablesorter({
+
+            });
+   });
+</script>

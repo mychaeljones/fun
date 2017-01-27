@@ -1,0 +1,60 @@
+<a href='/biz/inventory/view'>>>Inventory Orders</a>
+<div style="margin-bottom: 5px;"><h2><?= $this->action?> Shipment for <?= $this->order['item']?></h2></div>
+  
+<? if(!empty($this->error)): ?>
+    <div class="ui-widget">
+        <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+            <p>
+                <strong><?php echo $this->error;?></strong>
+            </p>
+        </div>
+    </div>
+<?endif;?>
+
+
+<br>
+<form method="POST">
+    <label for="item">Order Created By</label><?= $this->order['firstname']?><br>
+    <label for="modified_time">Order Created Time</label><?= $this->order['created_time']?><br>
+    
+    <label for="item">Item</label><?= $this->order['item']?> <br> 
+    <label for="priority">Priority</label><?= $this->order['priority']?> <br>    
+    <label for="specification">Specification</label><?=$this->order['specification']?><br>
+    <label for="supplier">Supplier</label><?= $this->order['supplier']?><br>
+    
+    <label for="quantity_ordered">Quantity Ordered</label><?= $this->order['quantity_ordered']?><br>
+    <label for="quantity_received">Quantity Received</label><?= $this->order['quantity_received']?><br>
+    <label for="quantity_oh_china">China Stock</label> <?= $this->order['quantity_oh_china']?> <br>
+    <label for="total_shipped">Total Shipped</label> <?= $this->order['total_shipped']?> <br><br><br>
+   
+    <label for="destination">Destination</label><input type="text" size="30" name="destination" value="<? echo isset($this->shipment['destination'])?$this->shipment['destination']:''?>"><br>
+    <label for="depart_date">Depart Date</label><input  class="datepicker" type="text" size="30" name="depart_date" value="<? echo isset($this->shipment['depart_date'])?$this->shipment['depart_date']:''?>"><br>
+    <label for="carrier">Carrier</label><input type="text" size="30" name="carrier" value="<? echo isset($this->shipment['destination'])?$this->shipment['carrier']:''?>"><br>
+    <label for="quantity">Quantity</label><input type="text" size="30" name="quantity" value="<? echo isset($this->shipment['quantity'])?$this->shipment['quantity']:''?>"><br>
+    <label for="unit_dimension">Carton dimension</label><input type="text" size="30" name="unit_dimension" value="<? echo isset($this->shipment['unit_dimension'])?$this->shipment['unit_dimension']:''?>"><br>
+    <label for="unit_vol">Carton Vol</label><input type="text" size="30" name="unit_vol" value="<? echo isset($this->shipment['unit_vol'])?$this->shipment['unit_vol']:''?>"><br>
+    <label for="unit_quantity">Quantity/Carton</label><input type="text" size="30" name="unit_quantity" value="<? echo isset($this->shipment['unit_quantity'])?$this->shipment['unit_quantity']:''?>"><br>
+    <label for="unit_weight">Weight/Carton</label><input type="text" size="30" name="unit_weight" value="<? echo isset($this->shipment['unit_weight'])?$this->shipment['unit_weight']:''?>"><br>
+    
+     <label for="Notes">Shipment Notes</label> 
+                <? if(isset($this->notes)):?>
+                <div style="margin-left: 200px;">
+                    <?foreach ($this->notes as $note):?>
+                    <?= $note['notes'] ?>
+                    <span style="margin-left: 30px;">-<?= $note['author'] ?> <?= $note['enter_time'] ?></span><br>
+                    <?endforeach;?>
+                </div>
+                <?endif;?>
+    <br>
+    <label for="Notes">New Notes</label>  <textarea name="notes" style="height:100px; width: 400px;" ></textarea><br><br>
+    <input type ="submit" value="<?= $this->action?>" class="button" style="margin-left: 200px;">
+</form>
+ <script>
+$(function() {
+
+$(".datepicker").datepicker({
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
+})
+</script>

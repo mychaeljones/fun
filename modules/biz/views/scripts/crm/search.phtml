@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/icon.css">	          
+    <script src="/biz/public/js/jquery.easyui.min.js"></script>    
+</head>
+
+<body>
+    	<div style="margin: 0 10px;"></div>        
+	<input id="textbox" class="easyui-searchbox" data-options="prompt:'Please Input Value',menu:'#mm',searcher:doSearch" style="width:400px;">
+	<div id="mm" style="width:150px;">
+		<div data-options="name:'all',iconCls:'icon-ok'">All</div>
+		<div data-options="name:'email'">Email</div>
+                <div data-options="name:'businessname'">Business Name</div>
+                <div data-options="name:'firstname'">First Name</div>
+                <div data-options="name:'lastname'">Last Name</div>
+                <div data-options="name:'fullname'">Full Name</div>
+                <div data-options="name:'contactphone'">Contact Phone</div>
+	</div>	
+         
+        <script>     
+            
+        $(function(){           
+            $('#textbox').next().find('input').focus();
+        });    
+            
+		function doSearch(value,name){
+		    /*alert('You input: ' + value+'('+name+')');
+                    $.post('/biz/crm/search-result', 
+                        { 
+                             "query":value,                             
+                             "category":name                             
+                        },
+                        function(data) {                           
+                               $("#body").html(data);
+                        }
+                     );*/
+                    var url = "/biz/crm/search-result?query="+encodeURIComponent(value)+"&category="+encodeURIComponent(name);
+                    window.location.href = url;
+                  
+		}        
+              
+	</script>
+</body>
+
+</html>

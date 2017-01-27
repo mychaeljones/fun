@@ -1,0 +1,53 @@
+<div id="pagination">
+        <div class="links">
+            <?php
+                       
+            if ($this->totalPages == 1) {
+                echo "1 of 1";
+            } else {
+                for ($i = 1; $i <= $this->totalPages; ++$i) {
+                    $current = " $i of $this->totalPages";
+                    $nextPage = $i + 1;
+                    $prevPage = $i - 1;
+                    $next = "<pp id='$nextPage'> > </pp>";
+                    $last = "<pp id='$this->totalPages'> >| </pp>";
+                    $prev = "<pp id='$prevPage'> < </pp>";
+                    $first = "<pp id='1'> |< </pp>";
+                    if ($this->page == 1) {
+                        echo $current . $next . $last;
+                        break;
+                    } elseif ($this->page == $this->totalPages) {
+                        $prevPage = $this->totalPages - 1;
+                        echo $first . "<pp id='$prevPage'> < </pp>" . "$this->page of $this->totalPages";
+                        break;
+                    } elseif ($this->page == $i) {
+                        echo $first . $prev . $current . $next . $last;
+                        break;
+                    }
+                }
+            
+            }?>            
+        </div>
+</div>
+
+<script type="text/javascript">
+        $(document).ready(function() {            
+            $("table tbody tr:nth-child(even)").addClass("even");  
+           
+            $("#pagination pp").click(function(){			
+		Display_Load();		
+		//Loading Data
+		var pageNum = this.id;
+		$("#data").load("<?= $this->url?>" + pageNum, Hide_Load());                
+            });      
+            function Display_Load()
+            {
+                $("#loading").fadeIn(900,0);           
+            }
+            //Hide Loading Image
+            function Hide_Load()
+            {
+                $("#loading").fadeOut('slow');
+            };            
+        });
+</script>

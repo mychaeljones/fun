@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or http://ckeditor.com/license
+-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="/biz/public/js/ckeditor/ckeditor.js"></script>
+    </head>
+    <body>
+        <?if(isset($this->message)):?>
+            <?echo $this->message; ?>
+        <?endif;?>
+        
+        <h2><?= $this->product['name']?></h2>
+        <form method="post">            
+            <p>
+                <label for="category">
+                    Category
+                </label>
+                <select name="category_id">
+                    <?foreach ($this->categories as $category):?>
+                    <option value="<?= $category['category_id']?>" <? if($this->product['category_id'] == $category['category_id']) echo 'selected';?>><?= $category['name']?></option>
+                    <?endforeach;?>                
+                </select>
+            </p>
+            <p>
+                <label for="short_description">
+                    Short Description:
+                </label>
+                <textarea id="short_description" name="short_description" cols="80" rows="4"> <?= $this->product['short_description']?></textarea>
+            </p>
+            <p>
+                <label for="image_link">
+                    Image Link:
+                </label>
+               <input type="text" id="image" name="image" size="120" value="<?= $this->product['image']?>">
+            </p>
+            
+            
+            <p><span style="font-weight: bold;">Product Description:</span><br>    
+                <textarea class="ckeditor" id="description" name="description" rows="10">
+                    <?= $this->product['description'] ?>
+                </textarea>
+            </p>
+            
+            <p> <input type="hidden" name="product_id" value="<?= $this->product['product_id'] ?>" >
+                <input type="submit" value="Submit">
+            </p>
+        </form>
+      
+    </body>
+</html>

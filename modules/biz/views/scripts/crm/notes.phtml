@@ -1,0 +1,145 @@
+<table class="account" width="380px;">
+   
+        <tr>
+            <th>Contact attempt</th>
+            <td><form id ='leadAttemptForm' method="post">
+                <select id="leadAttempt" name="leadAttempt">
+                        <option value=""></option>
+                        <option value="email">Email</option>
+                        <option value="phone">Phone</option>
+                </select>
+                 <input type='hidden' id="userId" name="userId" value ="<?= $this->user['id'] ?>">
+                 <input type="submit" id="submitAttempt" name="submitAttempt" value="Submit" />                 
+                </form>
+                <input type="text" name="followup" id="followup" size="20" value="<? echo $this->followup['start']?date('m/d/y g:i A', strtotime($this->followup['start'])):''?>" class="datetimePicker" placeholder="Follow-Up Time">
+                <div id="submitFollowup" class="button">Set</div><br>
+                <div id="followupMessage"></div>
+                 <span id="attemptNotes">
+                    <?php if ($this->attempts): ?>
+                        <?php foreach ($this->attempts as $attempt): ?>
+                            <br>
+                                <?php echo date('m/d/y &\nb\sp;&\nb\sp; g:i A', strtotime($attempt['enter_time'])); ?> <?php echo $attempt['author']; ?> <br>                                
+                                <?php echo $attempt['notes']; ?><br>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </span>
+            </td>
+           
+        </tr>
+    <tr>
+        <th>Enter Notes</th>    
+    
+        <td>
+               <form id ='noteForm' method="post" >
+                <div id ="commentSubmitArea">
+        <!--span id="loadnote" style ="display:none;"><img src="/shared/images/ajax_wait.gif"></span-->
+                    <span id="commentSection">
+                        <textarea rows="3" cols="36" id="comment" name="notes" onfocus="if (!this._haschanged) {
+                                                    this.value = ''
+                                                }
+                                                ;
+                                                this._haschanged = true;">Add a note</textarea>
+                    </span>
+                    <br/>
+                    <input type='hidden' id="userId" name="userId" value ="<?= $this->user['id'] ?>">
+                    <input type="submit" id="submitComment" name="submitComment" value="Submit" />
+                </div>
+                <br>
+                
+                 <span id="notes">
+                    <?php if ($this->notes): ?>
+                        <?php foreach ($this->notes as $comment): ?>
+                            <br>
+                                <?php echo date('m/d/y &\nb\sp;&\nb\sp; g:i A', strtotime($comment['enter_time'])); ?> &nbsp;&nbsp;&nbsp; <?php echo $comment['author']; ?> <br>                                
+                                <?php echo $comment['notes']; ?><br>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </span>
+            </td></tr>
+    </form>
+</table>
+<link href="/biz/public/css/jquery.datetimepicker.css" rel="stylesheet"/>
+<script src="/biz/public/js/jquery/jquery.datetimepicker.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        
+        $('.datetimePicker').datetimepicker({
+            dayOfWeekStart : 0,
+            format: 'm/d/y g:i A',
+            hour: '7:00 AM',            
+            step: 30,
+            formatTime: 'g:i A',
+            allowTimes:['7:00 AM','7:30 AM','8:00 AM','8:30 AM','9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM','5:00 PM','5:30 PM','6:00 PM','6:30 PM','7:00 PM' ],
+        });
+       $("#submitFollowup").click(function() {       
+            $.post('/biz/crm/followup', 
+            { 
+               'followup': $('#followup').val(),
+               'userId':<?= $this->user['id'] ?>
+            },
+            function(data) {    
+                $('#followupMessage').html('').removeClass("error");
+                $('#followupMessage').html('').removeClass("success");
+                if (data == 'success') {                    
+                    $('#followupMessage').html('Follow-up scheduled').addClass("success"); ;             
+                }
+                if (data != 'success') {                    
+                    $('#followupMessage').html(data).addClass("error");             
+                }
+            });  
+        });
+        $("#noteForm").submit(function(e){
+			/*$('#loadnote').show();
+			$('#commentSection').hide();
+        
+*/      
+
+    if($.trim($('#comment').val()) == '' || $('#comment').val() == 'Add a note') {      
+            alert('Please enter a note');
+            return false;        
+    }
+
+			e.preventDefault();
+			dataString = $("#noteForm").serialize();
+                  
+				$.ajax({
+                                    
+				type: "POST",
+				url: "/biz/crm/notes",
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                            
+				   $('#notes').prepend(data);
+				   $('#comment').val('');
+				}
+			});
+		});
+        $("#leadAttemptForm").submit(function(e){
+			
+        //check if there is a lead attempt       
+        if ($.trim($('#leadAttempt').val()) == '') {
+            alert('Please select a lead attempt.');
+            return false;
+        }    
+
+			e.preventDefault();
+			formData = $("#leadAttemptForm").serialize();
+                        //alert (formData);
+				$.ajax({
+                                    
+				type: "POST",
+				url: "/biz/crm/lead-attempt",
+				data: formData,
+				dataType: 'html',
+				success: function(data) {
+                            
+				   $('#attemptNotes').prepend(data);
+				  
+				}
+			});
+		});
+		
+	});
+</script>

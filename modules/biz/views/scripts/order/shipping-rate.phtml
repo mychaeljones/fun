@@ -1,0 +1,62 @@
+<div style="margin-top: 20px;"></div>
+<img src="/biz/public/image/utility/ups_logo.gif" style="float:left;margin-right:25px;">
+<? if (is_array($this->rates)):?>
+    <? $index = 0;?>
+    <table>
+    <? foreach ($this->rates as $rate):?>
+        <tr>
+        <td style="font-weight:bold;"><?= $rate["service"]?></td> 
+        <td style="text-align:right;">
+        $<?= $rate["rate"];?> 
+        </td>
+        <td style="text-align:right;">
+         <? if($this->selected['service'] == $rate["service"]):?>
+             <img src="/biz/public/image/utility/success.png">
+             <? else:?>
+             <a class='button service' id="row_<?= $index;?>">Select</a> 
+         <? endif;?>
+        </td>
+         <? ++$index;?>
+        </tr>
+    <? endforeach; ?>
+    </table>     
+
+<div style ="clear: both;"></div>
+
+<table style="margin-left: 500px;">    
+    <tr><td style="font-weight:bold;">Merchant Total: </td><td>$<?= number_format($this->itemsTotal, 2, '.', ',');?></td></tr>
+    <tr><td style="font-weight:bold;" >Shipping Service:</td><td><input type="text"  id="service" name="service" value="<?= $this->selected['service']?> "></td></tr>
+    <tr><td style="font-weight:bold;" >Shipping Rate:</td>
+    <td><input type="text"  id="shippingRate" name="shippingRate" value="<?= $this->selected['rate']?> "></td></tr>
+<?if(isset($this->salesTax)):?>
+    <input type="hidden" id="taxRate" name="taxRate" value="<?= $this->taxRate?> ">
+    <input type="hidden" id="tax_location_name" name="tax_location_name" value="<?= $this->tax_location_name?> ">
+    <input type="hidden" id="tax_location_code" name="tax_location_code" value="<?= $this->tax_location_code?> ">
+    
+    <tr><td style="font-weight:bold;">WA Sales Tax Rate:</td><td><?= $this->taxRate?></td></tr>
+    <tr><td style="font-weight:bold;">WA Sales Tax:</td><td><input type="text"  id="salesTax" name="salesTax" value="<?= $this->salesTax?> "></td></tr>
+<?endif;?>
+   <tr><td style="font-weight:bold;">Total: </td><td>$<?= $this->total?></td></tr>
+</table>    
+
+
+<?endif;?>
+
+<input type="hidden" id="addressId" name="addressId" value="<?= $this->id?> ">        
+<? if(isset($this->message) && $this->message !=''):?>
+    <span class="error"><?= $this->message?></span>
+<?endif;?>
+
+<div style ="clear: both;"></div>
+
+<script type="text/javascript">
+      $(function(){ 
+        $( ".service" ).click(function() {                             
+            which = (this.id).split("_");
+            $("#row_" + which[1]).html("<img src='/biz/public/image/utility/ajax-loader.gif'>");            
+            $('#shippingOption').load('/biz/order/shipping-rate/total/'+ <?= $this->itemsTotal?> +'/id/'+ <?= $this->id?>  + '/row/' + which[1] + '/' + Math.random()*Math.random());            
+        });
+            
+     });
+
+</script>

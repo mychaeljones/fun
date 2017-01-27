@@ -1,0 +1,47 @@
+<hr />
+<a href="/biz/training/" title="Back to Training Materials"><< Back to Training Materials</a>
+<br />
+<br />
+<div style="width: 80%; margin: 0 auto;">
+<h2>Notice:</h2>
+<p>Please be aware that this exam is to be completed under 20 minutes. Before accepting this agreement, make sure that you have the time and availability to complete this throughly. Also, note that <strong></strong>MULTIPLE ANSWERS ARE POSSIBLE.</strong></p>
+    
+<input type="checkbox" id="checkone"> I have read the above statement. <br />
+<div id="two" style="display: none;">
+    <input type="checkbox" id="checktwo"> I am capable of completeing this within the given twenty minute time frame. <br />
+</div>
+<div id="three" style="display: none;">
+    <input type="checkbox" id="checkthree"> I realize that multiple answers are possible. <br />
+</div>
+<input type="submit" id="submit" value="Start Exam" style="display: none; margin-top: 10px; display: hidden;">
+</div>
+
+<br />
+<br />
+<hr />
+
+<script>    
+$(document).ready(function() {
+    $( "#checkone" ).click(function() {
+        $( "#two" ).toggle( "slow", function() {
+        // Animation complete.
+        });
+    });
+    
+    $( "#checktwo" ).click(function() {
+        $( "#three" ).toggle( "slow", function() {
+        // Animation complete.
+        });
+    });
+    
+    $( "#checkthree" ).click(function() {
+        $( "#submit" ).toggle( "fast", function() {
+        // Animation complete.
+        });
+    });
+    
+    $( "#submit" ).click(function() {
+        window.location.href = "/biz/training/exam";
+    });    
+});
+</script>

@@ -1,0 +1,40 @@
+<h1>Why Should I Register?</h1>
+<div class="article-top">
+    <!--With a Beaming White business account, you’ll be able to:-->
+    Before you receive our wholesale pricing, you need to register as a potential business customer. This does not obligate you to purchase from us. It just ensures us that you are a legitimate potential business customer.
+In the near future, registered business customers will be able to do the following:
+</div>
+<rl>
+	<li>Get wholesale pricing on the products you order</li>
+	<li>Access our price list</li>
+	<li>Order products online</li>
+	<li>Access your order history</li>
+	<li>Easily reorder products</li>
+	<li>Download marketing materials and documents</li>
+	<li>Access our training center</li>
+	<li>Update your contact information</li>
+	<li>Order custom marketing materials such as a website or business cards</li>
+	<li>And more!</li>
+</rl>
+<span style="margin:10px 0;"></span>
+<h2>How to Register</h2>
+It’s simple! Just fill out the form below. One of our teeth whitening specialists will contact you to confirm your registration and place your first order. Then you’ll be given a username and password that you can use to login to our business center at any time
+<? echo $this->form;?>
+
+<script>    
+$(document).ready(function() {
+     $("#country").change(function() {
+            $.ajax({
+                url: '/biz/user/ajax-get-regions',
+                dataType: 'html',
+                type: "POST",
+                data: {country: $(this).val()},
+                success: function(data) {
+                    $('#state').html(data);
+                }
+            });
+
+        });
+
+ });
+</script>

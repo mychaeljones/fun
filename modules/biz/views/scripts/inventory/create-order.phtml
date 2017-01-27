@@ -1,0 +1,26 @@
+ <?= $this->action('construction', 'production'); ?>
+<a href='/biz/inventory/view'>>>Inventory Orders</a>
+<div style="margin-bottom: 5px;"><h2>Create Inventory Order</h2></div>
+  
+<? if(!empty($this->error)): ?>
+    <div class="ui-widget">
+        <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+            <p>
+                <strong><?php echo $this->error;?></strong>
+            </p>
+        </div>
+    </div>
+<?endif;?>
+<br>
+<form method="POST">
+    <label for="item">Item</label> <input type="text" size="30" name="item" value = "" > <br> 
+    <label for="quantity">Quantity</label> <input type="text" size="30" name="quantity_ordered" value = "" ><br>
+    <label for="priority">Priority</label> <select name="priority">
+        <option value="normal">Normal</option>
+        <option value="urgent">Urgent</option>
+    </select><br>
+    <label for="specification">Specification</label>
+    <textarea name="specification" style="height:50px; width: 400px;" ></textarea><br>
+    <label for="Notes">Notes</label>  <textarea name="notes" style="height:100px; width: 400px;" ></textarea><br><br>
+    <input type ="submit" value="Submit" class="button" style="margin-left: 200px;">
+</form>

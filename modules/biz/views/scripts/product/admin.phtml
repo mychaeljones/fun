@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>	
+	<title>Beaming White - On Line Product Admin</title>	
+        <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/default/easyui.css">
+        <link rel="stylesheet" type="text/css" href="/biz/public/js/jquery/easyui/themes/icon.css">	
+        <!--link rel="stylesheet" type="text/css" href="/biz/public/css/crm.css"-->                  
+        <script src="/biz/public/js/jquery.easyui.min.js"></script>   
+        <script type="text/javascript" src="/biz/public/js/jquery/jquery.edatagrid.js"></script> 
+        
+        <script type="text/javascript">
+		$(function(){
+			$('#dg').edatagrid({
+				url: 'get-product',
+				saveUrl: 'save-product',
+				updateUrl: 'update-product',
+				//destroyUrl: 'destroy_user.php'
+                                onError: function(index,row){
+                                    alert(row.msg);
+                                },
+                                autoSave:true
+			});
+		});
+	</script>
+</head>
+<body>
+	<h2>On Line Sales Product DataGrid</h2>
+	<div class="demo-info" style="margin-bottom:10px">
+		<div class="demo-tip icon-tip">&nbsp;</div>
+		<div>Double click the row to begin editing.</div>
+	</div>
+	
+	<table id="dg" title="On Line Sales Product DataGrid" style="width:960px;height:auto"
+			toolbar="#toolbar" idField="id" 
+			rownumbers="true" fitColumns="true" singleSelect="true">
+		<thead>
+			<tr>    <th data-options="field:'product_id',formatter:formatAction">Action</th>
+				<th field="name" width="35" editor="{type:'validatebox',options:{required:true}}">Product Name</th>
+				<th field="length" width="15" align="right" editor="{type:'validatebox',options:{required:true}}">Length</th>
+				<th field="width" width="15" align="right" editor="{type:'validatebox',options:{required:true}}">Width</th>
+				<th field="height" width="15" align="right" editor="{type:'validatebox',options:{validType:'number'}}">Height</th>
+                                <th field="weight" width="10" align="right" editor="{type:'validatebox',options:{validType:'number'}}">Weight</th>
+                                <th field="volumn" width="15" align="right" editor="{type:'validatebox',options:{validType:'number'}}">volume</th>
+                                <!--th field="short_description" align="right" width="35" editor="text">Short Description</th>
+                                <th field="image" width="30" align="right" editor="text">Image</th-->
+                                <th field="status" width="8" align="right" editor="text">Active</th>
+                                
+			</tr>
+		</thead>
+	</table>
+	<div id="toolbar">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">New</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">Remove</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">Save</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">Cancel</a>
+	</div>
+<script type="text/javascript">
+    function formatAction(val,row){    
+            return '<a href= "/biz/product/edit/id/' + val + '">'  + 'Edit </a>';    
+    }
+</script>	
+</body>
+</html>

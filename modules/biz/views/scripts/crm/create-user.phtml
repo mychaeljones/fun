@@ -1,0 +1,20 @@
+<h2>Create <?= $this->type?></h2>
+<? echo $this->form;?>
+
+<script>    
+$(document).ready(function() {
+     $("#country").change(function() {
+            $.ajax({
+                url: '/biz/user/ajax-get-regions',
+                dataType: 'html',
+                type: "POST",
+                data: {country: $(this).val()},
+                success: function(data) {
+                    $('#state').html(data);
+                }
+            });
+
+        });
+
+ });
+</script>

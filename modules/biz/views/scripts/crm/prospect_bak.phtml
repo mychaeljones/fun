@@ -1,0 +1,103 @@
+<div style="float:right;">    
+<?=$this->action('search', 'crm');?>
+</div>
+
+<div style="float:left;">
+       
+    Rep: <select name="repid" id="repid">        
+        <option value="">All </option>
+        <? foreach($this->reps as $reps):?>        
+        <option value="<?= $reps['id']?>" <?if(isset($this->rep) && $this->rep == $reps['id']) echo 'selected';?>><?= $reps['name']?></option>
+        <?endforeach;?>
+    </select>
+       
+    <span style="margin-left: 10px;"></span>       
+    Potential: <select name="pid" id="pid">        
+        <option value="">All</option>
+        <? foreach($this->potentials as $key=>$value):?>        
+        <option value="<?= $key?>" <?if(isset($this->pid) && $this->pid == $key) echo 'selected';?>><?= $value?></option>
+        <?endforeach;?>
+    </select>
+    
+     <span style="margin-left: 10px;"></span>       
+    Source: <select name="source" id="source">        
+        <option value="">All</option>
+        <? foreach($this->sources as $key=>$value):?>        
+        <option value="<?= $key?>" <?if(isset($this->source) && $this->source == $key) echo 'selected';?>><?= $value?></option>
+        <?endforeach;?>
+    </select>
+        
+</div>
+
+
+<? 
+$parent_user = $potential =  $source = '';
+if(isset($this->rep) && $this->rep !='' ) {
+    $parent_user = (int)$this->rep;
+}
+if(isset($this->pid) && $this->pid !='' ) {
+    $potential = $this->pid;
+}
+if(isset($this->source) && $this->source !='' ) {
+    $source = $this->source;
+}
+
+?>
+<div style="clear:both;"></div>
+<table id="dg" title="Prospects" style="width:960px;height:auto"
+			data-options="rownumbers:true,pagination:true,pageSize:30,
+                        url:'get-prospect/repid/<?= $parent_user?>/pid/<?= $potential?>/source/<?= $source?>',method:'get'">
+ <thead>
+    <tr >
+    <th data-options="field:'id',width:45, formatter:formatAction">Action</th>    
+    <th data-options="field:'rep',width:60,sortable:'true'">Owner</th>
+    <th data-options="field:'businessname', width:130,sortable:'true'">Business Name</th>    
+    <th data-options="field:'firstname',width:75,sortable:'true'">First Name</th>    
+    <th data-options="field:'lastname',width:75,sortable:'true'">Last Name</th>   
+    <th data-options="field:'contactphone',width:114,align:'right', sortable:'true'">Phone</th>
+    <th data-options="field:'email',width:153, sortable:'true'">Email</th>
+    <th data-options="field:'show_time', width:136,sortable:'true'">Created Time</th>
+    <th data-options="field:'enter_time', width:136,sortable:'true'">Attempt Time</th>    
+    </tr>
+</thead>
+
+ </table>
+
+
+<script type="text/javascript">
+    function formatAction(val,row){    
+            return '<a target="_blank" href= "customer/id/' + val + '">'  + 'Detail </a>';    
+    }
+    $(function(){       
+         
+         var dg = $('#dg').datagrid({
+             /*filterBtnIconCls:'icon-filter',*/
+              rowStyler:function(index,row){                              
+                if (row.potential == 'Hot') {
+                    return 'background-color:darkred;color:white;';                  
+                }else if (row.potential == 'Warm') {
+                    return 'background-color: darkorange;color:blue;';                  
+                }else if (row.potential == 'Cool') {
+                    return 'background-color: yellow;color:blue;';                  
+                }else if (row.potential == 'Cold') {
+                    return 'background-color: lightyellow;color:blue;';                  
+                }else if (row.potential == 'Big') {
+                    return 'background-color: lawngreen;color:dark;';                  
+                }else if (row.potential == 'Huge') {
+                    return 'background-color: darkgreen;color:white;';                  
+                }
+              }             
+          });   
+          $( "#repid" ).change(function() {  
+              window.location.href = '/biz/crm/prospect?repid=' + $( "select[name='repid']" ).val() +'&pid=' + $( "select[name='pid']" ).val()+'&source=' + $("select[name='source']" ).val();
+          });
+          
+          $( "#pid" ).change(function() {  
+              window.location.href = '/biz/crm/prospect?repid=' + $( "select[name='repid']" ).val() +'&pid=' + $( "select[name='pid']" ).val() +'&source=' + $("select[name='source']" ).val();
+          });
+          $( "#source" ).change(function() {  
+              window.location.href = '/biz/crm/prospect?repid=' + $( "select[name='repid']" ).val() +'&pid=' + $( "select[name='pid']" ).val() +'&source=' + $( "select[name='source']" ).val();
+          });
+        
+    })
+</script>

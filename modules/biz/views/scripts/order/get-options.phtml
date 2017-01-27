@@ -1,0 +1,23 @@
+<? if(!empty($this->options)): ?>
+   <!-- <?if (isset($this->error)):?>
+         <div class="error"><e><?= $this->error?></e></div>    
+    <?endif;?>-->
+          <span id="optionError"></span>
+    <form id="optionForm">    
+        <h4>Please Choose Product Optioins</h4><br>
+
+        <?foreach ($this->options as $key => $values):?>
+            <label for=<?= $key?>"><?= $key?></label>
+                <select name="option[<?= $key?>]">
+                    <?foreach ($values as $index=>$value):?>
+                        <option value="<?= $index?>"> <?= $value?> </option>
+                    <?endforeach?>
+                </select><br>
+        <?endforeach?>     
+
+
+          <input type="hidden" name="optionProductId" value="<?= $this->productId?>">
+
+          <label for="quantity">Quantity</label><input type="text" name="optionQuantity" size="5">
+    </form>
+<?endif?>      

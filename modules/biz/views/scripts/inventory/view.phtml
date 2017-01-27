@@ -1,0 +1,162 @@
+<head>     
+     <link rel="stylesheet" type="text/css" href="/biz/public/css/tablesorter.css">	 
+     <script type="text/javascript" charset="utf-8" src="/biz/public/js/table-sorter/jquery.tablesorter.min.js"></script>   
+     <script type="text/javascript" charset="utf-8" src="/biz/public/js/table-sorter/jquery.tablesorter.widgets.min.js"></script>   
+    
+<style>
+    .wrapper {
+        position: relative;
+        padding: 0 5px;
+        height: 16.667em;
+        overflow-y: auto;
+    }
+    .tablesorter thead .disabled {display: none}
+    .tablesorter, .tablesorter .tablesorter-filter {
+        width: auto;
+    }
+    .tablesorter .tablesorter-filter {
+        width: 72px;
+    }
+    .tablesorter .tablesorter-filter-row td:nth-child(15n+6) .tablesorter-filter {
+        width: 124px;
+    }
+
+    
+</style>
+<script>
+$(function(){
+   // $("table.tablesorter tbody tr:nth-child(even)").addClass("striped");   
+        var options = {
+    widthFixed : true,
+    showProcessing: true,
+    //headerTemplate : '{content} {icon}', // Add icon for jui theme; new in v2.7!
+    headerTemplate : '{content}', // Add icon for jui theme; new in v2.7!
+    //
+    //widgets: [ 'uitheme', 'zebra', 'stickyHeaders', 'filter' ],
+    widgets: ['stickyHeaders', 'filter' ],
+
+    headers: { 
+        0: {sorter: false, filter:false},
+        1: {sorter: false, filter:false},
+        2: {sorter: false, filter:false},
+    },
+    widgetOptions: {
+      
+      // extra class name added to the sticky header row
+      stickyHeaders : '',
+      // number or jquery selector targeting the position:fixed element
+      stickyHeaders_offset : 0,
+      // added to table ID, if it exists
+      stickyHeaders_cloneId : '-sticky',
+      // trigger "resize" event on headers
+      stickyHeaders_addResizeEvent : true,
+      // if false and a caption exist, it won't be included in the sticky header
+      stickyHeaders_includeCaption : true,
+      // The zIndex of the stickyHeaders, allows the user to adjust this to their needs
+      stickyHeaders_zIndex : 2,
+      // jQuery selector or object to attach sticky header to
+      stickyHeaders_attachTo : null,
+      // scroll table top into view after filtering
+      stickyHeaders_filteredToTop: true,
+
+      // adding zebra striping, using content and default styles - the ui css removes the background from default
+      // even and odd class names included for this demo to allow switching themes
+     // zebra   : ["ui-widget-content even", "ui-state-default odd"],
+      // use uitheme widget to apply defauly jquery ui (jui) class names
+      // see the uitheme demo for more details on how to change the class names
+     // uitheme : 'jui'
+    }
+  };
+
+  $("table").tablesorter(options);
+   
+});
+</script>
+
+</head>
+
+<?= $this->action('construction', 'production'); ?>
+<a href='/biz/inventory/stock'>>>Inventory Item Stock</a>
+<div style="margin-bottom: 5px;"><h2>Inventory Orders</h2></div>
+<a href="/biz/inventory/create-order" class="button" >Create Order</a><br><br>
+    
+        <table class="account tablesorter" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+               <tr>
+               <th width="5%"></th>   
+               <th width="5%">Action</th>
+               <th width="5%"></th>
+               <th class="header">Date</th> 
+               <th class="header">Ordered <br> By</th> 
+               <th class="header">Item</th>
+               <th>Notes</th>
+               <th>Specs</th>    
+               <th class="header">Supplier</th>
+               <th class="header">Quantity<br> Ordered</th>
+               <th class="header">Quantity <br>Rcd(China)</th>
+               <th class="header">China <br> Stock</th>
+               <th class="header">Total <br>Shipped</th>
+               <th class="header">EDD</th>
+               <th class="header">ADD</th>
+               </tr>
+           </thead>
+           <tbody>               
+                 <? foreach($this->orders as $order):?>    
+                       <!--tr <?if($order['priority'] == 'urgent') echo 'background-color: #F2DEDE;';?>"-->
+               <tr style="background-color: red;">
+                           <td><a class="smallButton" href="/biz/inventory/update-order/id/<?= $order['id']?>">Detail/<br>Update</a></td>                              
+                           <td><?if($order['quantity_oh_china'] >0):?>
+                               <a class="smallButton" href="/biz/inventory/create-shipment/id/<?= $order['id']?>">Create <br> Shipment</a>
+                               <?endif;?>
+                           </td>
+                           <td><span class="small infoButton view_log" id="<?= $order['id']?>">View <br> Log</span></td>                         
+                       <td><?= $order['created_time']?></td> 
+                       <td><?= $order['firstname']?></td>
+                       <td style="width:25%;"><?= $order['item']?></td>  
+                       <td><?= $order['notes']?></td>  
+                       <td><?= $order['specification']?></td>  
+                       <td><?= $order["supplier"];?></td>                           
+                       <td align="right"><?= $order['quantity_ordered']?></td> 
+                       <td align="right"><?= $order['quantity_received']?></td> 
+                       <td align="right"><?= $order['quantity_oh_china']?></td> 
+                       <td align="right"><?= $order['total_shipped']?></td> 
+                       <td align="right"><?= $order['EDD']?></td> 
+                       <td align="right"><?= $order['ADD']?></td> 
+                       
+                       </tr>
+                 <? endforeach; ?>
+           </tbody>
+        </table>
+<div id="dialog_view_log">
+	<div id="view_log"></div>
+</div>
+<script>
+$(function() {    
+        
+            
+    $('.view_log').click(function() {                          
+            $('#view_log').html('');            
+            $('#view_log').load('/biz/inventory/log/id/' + $(this).attr("id") + '/type/order');
+	    $('#dialog_view_log').dialog('open');
+	});    
+
+   $('#dialog_view_log').dialog({
+		title: 'Change log',
+		autoOpen:false,
+                width: 550,
+		maxWidth:600,            
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    
+		    Close: function() {			
+			$(this).dialog('close');
+                    }
+		}
+	});
+        
+   
+    
+});
+</script>

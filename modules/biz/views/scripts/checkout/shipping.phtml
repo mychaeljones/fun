@@ -1,0 +1,114 @@
+<div style="float:left; width: 70%">       
+<?= isset($this->flashMessage[0])?$this->flashMessage[0]:'';?>
+     
+<h4>Contact Information</h4>
+<label for="contact_email">Contact Email</label> <input type="text" id="contact_email" name="contact_email" value="<?= $this->contact_email;?>"><br>
+<label for="contact_email">Contact Phone</label> <input type="text" id="contact_phone" name="contact_phone" value="<?= $this->contact_phone;?>"><br><br>
+
+<h4>Choosing shipping address</h4>  
+     <div id ="userAddress">     
+         <?= $this->partial('order/_shipping-address.phtml', array('addresses'=>$this->addresses, 'selected' => $this->selected));?>
+     </div>
+     <div id="shippingOption"> <?=$this->action('shipping-rate', 'checkout');?></div>
+     
+</div>
+<div id='showcart' style="float:right; width:30%;">
+    <?=$this->action('showcart', 'cart');?>
+</div>
+
+<div id="dialog_edit_address">
+	<div id="edit_address"></div>
+</div>
+
+<div id="dialog_add_address">
+    <div id="add_address"></div>
+</div>
+
+
+<script type="text/javascript">
+      $(function(){        
+          $( ".select" ).click(function() { 
+                if ($("#contact_email").val() == '')  {
+                    alert("Please Enter a contact email for this order.");
+                    return false;
+                }    
+               
+                if ($("#contact_phone").val() == '')  {
+                    alert("Please Enter a contact phone for this order.");
+                    return false;
+                }   
+                
+                 selectedId = 'selected_' + this.id;   
+                 $(".select").show();                                 
+                 $(".selected").hide();                  
+                 $('#'+selectedId).show();
+                 $('#'+this.id).hide();
+                 
+                  $.post(
+				'/biz/checkout/update-shipping',
+				{addressId: this.id,
+                                 contact_email: $("#contact_email").val(),
+                                 contact_phone: $("#contact_phone").val(),
+                                },
+				function(responseText)
+				{					
+                                   $("#shippingOption").load('/biz/checkout/shipping-rate');
+                                   //$("#showcart").load('/biz/cart/showcart');
+                                   
+                                   
+            $('#showcart').delay(500).queue(function( nxt ) {
+                $(this).load('/biz/cart/showcart/'+ Math.random()*Math.random());
+                nxt();
+            });
+				},
+				'html'
+			)
+                 
+          });          
+          
+    $('.edit_address').click(function() {       
+          which = ($(this).attr("id")).split("_");      
+            $('#edit_address').html('');
+            $('#edit_address').load('/biz/user/editaddress/id/' + which[1] + "/from/checkout");
+	    $('#dialog_edit_address').dialog('open');
+	});
+
+    $('#dialog_edit_address').dialog({
+		title: 'Edit Address',
+		autoOpen:false,
+		minWidth:600,
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+		    Close: function(){
+			$('#edit_address').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+        
+     $('.add_address').click(function() {                 
+            $('#add_address').html('');
+            $('#add_address').load('/biz/user/add-address');
+	    $('#dialog_add_address').dialog('open');
+	});
+
+    $('#dialog_add_address').dialog({
+		title: 'Add Address',
+		autoOpen:false,
+		minWidth:600,
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+		    Close: function(){
+			$('#add_address').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+          
+               
+        });
+</script>

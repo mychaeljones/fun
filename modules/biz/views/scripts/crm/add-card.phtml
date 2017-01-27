@@ -1,0 +1,26 @@
+<style>
+    select#year {
+    position: relative;
+    top: 8px;
+    left: -25px;
+}
+</style>
+<h4>Add Payment Card</h4>
+<span id="message"></span>
+<?=$this->form?>
+
+ <script>    
+    $(document).ready(function() {
+         $("#country-element #country").change(function() {
+                $.ajax({
+                    url: '/biz/user/ajax-get-regions',
+                    dataType: 'html',
+                    type: "POST",
+                    data: {country: $(this).val()},
+                    success: function(data) { 
+                        $('#state-element #state').html(data);
+                    }
+                });
+            });
+     });
+    </script>

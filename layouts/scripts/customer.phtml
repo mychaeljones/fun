@@ -1,0 +1,98 @@
+<head>    
+    <script type="text/javascript" src="/biz/public/js/jquery/superfish/js/superfish.js"></script> 
+    <link rel="stylesheet" type="text/css" href="/biz/public/css/customer.css">        
+</head>
+<div id="consumer_menu">
+    <ul class="left">
+      <li id="dashboard"><a href="/biz/user/index" class="top">Home</a></li>
+      <li id="orders"><a href="/biz/user/order-history" class="top">Orders</a></li>
+      <li id="products"><a href="/biz/product" class="top">Products</a></li>
+      <li id="training"><a href="/biz/user/index" class="top">Training</a></li>
+      <li id="downloads"><a href="/biz/downloads" class="top">Downloads</a></li>
+      <li id="account"><a href="/biz/user/profile" class="top">Account</a></li>
+      <li id="account"><a href="/biz/user/index" class="top">Support</a></li>
+      
+      <!--li id="extension"><a class="top">extension</a>
+        <ul>
+          <li><a href=>text_module</a></li>
+          <li><a href=>text_module2</a></li>
+        
+        </ul>
+      </li-->
+      
+      
+      
+    
+    </ul>
+    <!--ul class="right">
+      <li id="store"><a onClick="window.open('');" class="top">fdf</a>
+        <ul>
+         
+          <li><a onClick="window.open('');"></a></li>
+         
+        </ul>
+      </li>
+      <li id="store"><a class="top" href="">logout</a></li>
+    </ul-->
+    <script type="text/javascript"><!--
+$(document).ready(function() {
+	$('#consumer_menu > ul').superfish({
+		hoverClass	 : 'sfHover',
+		pathClass	 : 'overideThisToUse',
+		delay		 : 0,
+		animation	 : {height: 'show'},
+		speed		 : 'normal',
+		autoArrows   : false,
+		dropShadows  : false, 
+		disableHI	 : false, /* set to true to disable hoverIntent detection */
+		onInit		 : function(){},
+		onBeforeShow : function(){},
+		onShow		 : function(){},
+		onHide		 : function(){}
+	});
+	
+	$('#consumer_menu > ul').css('display', 'block');
+     
+});
+
+function getURLVar(urlVarName) {
+	var urlHalves = String(document.location).toLowerCase().split('?');
+	var urlVarValue = '';
+	
+	if (urlHalves[1]) {
+		var urlVars = urlHalves[1].split('&');
+
+		for (var i = 0; i <= (urlVars.length); i++) {
+			if (urlVars[i]) {
+				var urlVarPair = urlVars[i].split('=');
+				
+				if (urlVarPair[0] && urlVarPair[0] == urlVarName.toLowerCase()) {
+					urlVarValue = urlVarPair[1];
+				}
+			}
+		}
+	}
+	
+	return urlVarValue;
+} 
+
+$(document).ready(function() {
+	route = getURLVar('route');
+	//alert(String(document.location).toLowerCase().split('/'));
+	if (!route) {
+            
+		$('#dashboard').addClass('selected');
+	} else {
+		part = route.split('/');
+		
+		url = part[0];
+		
+		if (part[1]) {
+			url += '/' + part[1];
+		}
+		alert ('a[href*=\'' + url + '\']').parents('li[id]');
+		$('a[href*=\'' + url + '\']').parents('li[id]').addClass('selected');
+	}
+});
+//--></script> 
+  </div>

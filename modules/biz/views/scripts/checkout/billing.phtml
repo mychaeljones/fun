@@ -1,0 +1,110 @@
+<div style="float:left; width: 40%">
+
+    <h4>Select payment</h4>
+    <img alt="" title="" src="../public/image/payment/credit_card_logos_11.gif" width="235" height="35" border="0" />
+    <div id='failed'></div>    
+    
+<?
+ if (!empty($this->profiles)) {
+      $request = new Application_Service_AuthorizeNetCIM;
+?>
+      <table>
+          <tr><th>Card Type</th><th>Number</th><th>Exp date</th><th colspan="2">Action</th></tr>
+            
+<?  foreach ($this->profiles as $profile) {
+            $paymentProfile = $request->getCustomerPaymentProfile($profile['profile_id'], $profile['payment_profile_id']);             
+            $card = $paymentProfile->xml->paymentProfile->payment->creditCard;
+            //$billTo = $paymentProfile->xml->paymentProfile->billTo
+            ?>            
+            <tr><td><?=  $profile['type'] ?></td><td><?= $card->cardNumber ?></td><td><?= $card->expirationDate?></td>
+                <td><a class="smallButton select" id="<?=  $profile['payment_profile_id'] ?> ">SELECT</a> </td>                                  
+                <td width="35%">
+                    <form class="cvv" id="cvvForm_<?= $profile['payment_profile_id']?>" style="display:none;font-size: 0.875em;">Enter Security Code:<br>
+                        <input type="text" name="cvv" size="4" style="padding: 3px;font-size: .9em;">
+                        <input type="hidden" name="paymentProfileId" value="<?= $profile['payment_profile_id']?>">
+                        <input type="submit" class="smallButton" name="submit" value="submit">
+                    </form>
+                </td>              
+            </tr>            
+<?        }?>
+      </table>
+ <?   } ?>
+<br><br>
+
+    <a class="add_card">Add a new card</a>
+<!--
+    <? $style = '';?>
+    <?if (!empty($this->profiles)) $style = "style = display:none;" ?>
+    <?if (isset($this->dataError)) $style = "style = display:true;" ?>
+
+    <div id = 'paymentForm' <?= $style?>>
+        <?= $this->form;?>
+    </div>
+-->
+    <div id="dialog_add_card">
+        <div id="add_card"></div>
+    </div>
+</div>
+
+<div id='showcart' style="float:right; width:45%;">
+    <?=$this->action('showcart', 'cart');?>
+</div>
+
+
+<script>
+$(function() {    
+    $("#add").click(function() {
+        $("#paymentForm").show();
+    });   
+    $( ".select" ).click(function() {      
+        $('.cvv').hide();
+        formId = 'cvvForm_'+ this.id;
+         $('#'+formId).show();
+         $('#'+this.id).hide();
+      //  alert(this.id);
+      });  
+      
+      $("form[id^='cvvForm_']").submit(function(e){
+        e.preventDefault();	
+        dataString = $("#"+this.id).serialize();       
+        $.ajax({
+            type: "POST",
+            url: "/biz/checkout/validate-card",
+            data: dataString,
+            dataType: 'json',
+            success: function(data) {
+               //alert(data.status);
+               if (data.status == 'OK') {
+                 window.location.href = "/biz/checkout/confirm";
+               }
+               if (data.status == 'FAILED') {
+                 $("#failed").html("Security code failed, please try again.");
+               }
+            }
+        });
+      });
+      
+          
+     $('.add_card').click(function() {                 
+            $('#add_card').html('');
+            $('#add_card').load('/biz/user/wallet/from/checkout');
+	    $('#dialog_add_card').dialog('open');
+	});
+
+    $('#dialog_add_card').dialog({
+		title: 'Add a new card',
+		autoOpen:false,
+		minWidth:600,
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+                
+		buttons: {
+		    Close: function(){
+			$('#add_card').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+});
+</script>

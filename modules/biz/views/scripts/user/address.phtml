@@ -1,0 +1,206 @@
+<head>
+<style>
+table {
+    border: none;
+}
+th, td {
+    border: none;        
+    vertical-align: middle;       
+}
+</style>
+</head>
+<h4>My Address Book</h4>
+<a class="add_address" id="add" style="float:right"><img src="/biz/public/image/utility/add.png"></a>
+    <? if(!empty($this->address)):?>            
+    <table>
+      <?$i = 0;?>          
+    <? foreach($this->address as $address):?>       
+       <?if($i%3 == 0):?>
+       <tr>      
+        <?endif;?>     
+        <td>
+        <div id="addressSection"> 
+            
+             <?= $address['firstname']?> <?= $address['lastname']?> 
+             <a class="edit_address" id="edit_<?= $address['address_id']?>"><img src="/biz/public/image/utility/review.png"></a> 
+               <br>
+               <?= $address['address1']?> <br>
+               <? echo $address['address2']?$address['address2'].'<br>':''; ?> 
+               <?= $address['city']?>, <?= $address['state']?> <br> <?= $address['zipcode']?> <br>
+               <?= $address['country']?> <br>
+            
+               <a class="delete" title="<?= $address['address_id']?>"><img src="/biz/public/image/utility/delete.png"></a><br><br>
+        </div>
+        </td>
+       <?if(($i+4)%3 == 0):?>
+        </tr>
+       <?endif;?>
+        <? ++$i?>
+    <? endforeach;?>               
+    </table>
+   <? endif; ?>
+<br>
+
+<div id="dialog_edit_address">
+	<div id="edit_address"></div>
+</div>
+
+<div id="dialog_add_address">
+    <div id="add_address"></div>
+</div>
+
+<script>
+$(function() {    
+       
+    $(".delete").click(function() {           
+        var r=confirm("Delete this address?");
+        if (r==true) {
+            $.post('/biz/user/deleteaddress', 
+            { 
+                "id":$(this).attr("title")                      
+            },
+            function(data) {                           
+                window.location.href = "/biz/user/address";
+            });           
+        }        
+    });    
+            
+    $('.edit_address').click(function() {       
+          which = ($(this).attr("id")).split("_");      
+            $('#edit_address').html('');            
+            $('#edit_address').load('/biz/user/editaddress/id/' + which[1]);
+	    $('#dialog_edit_address').dialog('open');
+	});    
+
+   $('#dialog_edit_address').dialog({
+		title: 'Edit Address',
+		autoOpen:false,
+                width: 550,
+		maxWidth:600,            
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    Edit: function() {                      
+                       // e.preventDefault();
+			dataString = $("#address").serialize();                    
+                        $.ajax({                                    
+				type: "POST",
+				url: "/biz/user/editaddress/id/"+which[1],
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                                    if (data == 'success') {                                          
+                                        window.location.href = "/biz/user/address"
+                                       // $("#dialog_edit_address").dialog('close');                                        
+                                     } else {
+                                         $("#message").html(data).addClass('error');                               
+                                     }
+				}
+			});
+                    },
+		    Cancel: function() {
+			$('#edit_address').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+        
+            
+      $('.add_address').bind('click', function(){   
+            $('#add_address').html('');            
+            $('#add_address').load('/biz/user/add-address/');
+	    $('#dialog_add_address').dialog('open');
+       });           
+
+    $('#dialog_add_address').dialog({
+      		title: 'Add Address',
+		autoOpen:false,
+		width: 550,
+		maxWidth:600, 
+		modal:true,
+		resizable:true,
+                position:['middle',20],
+		buttons: {
+                    Add: function() {                      
+                   
+			dataString = $("#address").serialize();                   
+                        $.ajax({                                    
+				type: "POST",
+				url: "/biz/user/add-address",
+				data: dataString,
+				dataType: 'html',
+				success: function(data) {
+                                if (data == 'success') {                                          
+                                    window.location.href = "/biz/user/address"                                                                       
+                                     } else {
+                                         $("#message").html(data).addClass('error');                               
+                                     }
+				}
+			});
+                    },
+		    Cancel: function(){
+			$('#add_address').html('');
+			$(this).dialog('close');
+                    }
+		}
+	});
+    
+});
+</script>
+
+<!--
+<? if(!empty($this->address)):?>
+You will be able to select from these shipping addresses in checkout.<br>
+    <? $showForm = 1;?>           
+    <? foreach($this->address as $address):?>       
+       <?= $address['firstname']?> <?= $address['lastname']?>  <br>
+       <?= $address['address1']?> <br>
+      <? echo $address['address2']?$address['address2'].'<br>':''; ?> 
+       <?= $address['city']?>, <?= $address['state']?> <br> <?= $address['zipcode']?> <br>
+       <?= $address['country']?> <br>
+       <a href="/biz/user/editaddress/id/<?= $address['address_id']?>">edit</a> 
+       <a class="delete" title="<?= $address['address_id']?>">delete</a> <br><br>
+    <? endforeach;?>  
+   
+<? endif; ?>
+<br>
+
+
+<a id="add">Add a new address </a>
+<? $style = '';?>
+<?if(isset($showForm)) $style = "style = display:none;" ?>
+<div id = 'addressForm' <?= $style?>>
+    <?= $this->form;?>
+</div>
+
+<script>
+$(function() {    
+    $("#add").click(function() {
+        $("#addressForm").show();
+    });
+    $("#country").change(function() {
+            $.ajax({
+                url: '/biz/user/ajax-get-regions',
+                dataType: 'html',
+                type: "POST",
+                data: {country: $(this).val()},
+                success: function(data) {
+                    $('#state').html(data);
+                }
+            });
+
+    });   
+    
+    $(".delete").click(function() {           
+        var r=confirm("Delte this address?");
+        if (r==true) {
+            //alert($(this).attr("title") );
+            window.location.href = "/biz/user/deleteaddress/id/" + $(this).attr("title");
+        }     
+        
+    });
+    
+});
+</script>
+       -->

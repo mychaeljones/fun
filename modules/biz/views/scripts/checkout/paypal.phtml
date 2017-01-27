@@ -1,0 +1,9 @@
+<img src="../public/image/payment/btn_xpressCheckout.gif" style="margin: 20px 0px 10px 400px;">
+<div clear="both">
+<?=$this->action('showcart', 'cart');?>
+    <form method="POST">
+         Notes to the order: <br>
+        <textarea name="comment" style="width: 400px; height: 50px; vertical-align: top; "></textarea>
+        <br><a href="/biz/checkout/shipping">Back</a>
+        <input type="submit" name="submit" value="Proceed to paypal" />
+    </form>

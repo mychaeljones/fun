@@ -1,0 +1,62 @@
+<head>  
+    <script>
+        $(function() {
+
+            $("#tabs").tabs({
+                beforeLoad: function(event, ui) {
+                    ui.jqXHR.error(function() {
+                        ui.panel.html(
+                                "Waiting...");
+                    }
+                    );
+                }
+            });
+        <? if (Zend_Auth::getInstance()->getIdentity()->role == 'admin'): ?>
+                $(".deleteButton").click(function() {
+                    var r = confirm("Are you sure you want to delete this account?");
+                    if (r == true) {
+                        $.post('/biz/crm/delete-customer',
+                                {
+                                    "id": $(this).attr("id")
+                                },
+                        function(data) {
+                            if (data == 'success') {
+                                window.location.href = '/biz/crm/leads'
+                            } else {
+                                $("#delete_error").html(data).addClass("error");
+                            }
+                        });
+                    }
+                });
+
+         <? endif; ?>
+        });
+    </script>
+</head>
+
+
+<h4><?= $this->type ?> <?= $this->customerName; ?></h4>
+<a class="button" href="/biz/order/order-info/id/<?= $this->customerId; ?>" >Create Order</a>
+
+<? if (Zend_Auth::getInstance()->getIdentity()->role == 'admin'): ?>
+    <span class="deleteButton" id="<?= $this->customerId; ?>">Delete</span>
+<? endif; ?>
+
+<div id="delete_error"></div>
+<div id="right">
+
+    <a class="spacing" href="/biz/crm/customer/prev/<?= $this->customerId; ?>/type/<?= $this->type ?>"><b>Previous</b></a>  
+    <a href="/biz/crm/customer/next/<?= $this->customerId; ?>/type/<?= $this->type ?>"><b>Next</b></a>
+</div>
+
+<br>
+<div id="tabs" class="easyui-tabs" style="width:960px;height:auto;"> 
+    <ul>
+        <li><a href="/biz/crm/view/id/<?= $this->customerId; ?>">Account</a></li>
+        <li><a href="/biz/crm/address-book/id/<?= $this->customerId; ?>">Address Book</a></li>
+        <li><a href="/biz/crm/payment/id/<?= $this->customerId; ?>">Payment Cards</a></li>
+        <li><a href="/biz/crm/order-history/id/<?= $this->customerId; ?>">Order History</a></li>
+        <li><a href="/biz/crm/product/id/<?= $this->customerId; ?>">Product</a></li>       
+        <li><a href="/biz/crm/price/id/<?= $this->customerId; ?>">price</a></li>       
+    </ul>
+</div>
